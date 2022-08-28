@@ -24,7 +24,7 @@ class Bullet():
         # settings
         image_bullet         = 'images/bullet.png'
         scale_bullet         = 0.045
-        self.bullet_velocity = 5
+        self.bullet_velocity = 11 
 
         # image   
         self.image = pg.image.load(image_bullet).convert_alpha()
@@ -39,11 +39,16 @@ class Bullet():
         self.rect_bullet.topleft = (self.x,self.y)     
         
     
-    # draw 
-    def draw(self,bullet_collided_star):
+    def initialize(self, x, y, spaceship_width):
+        self.x = x + (spaceship_width/2) - (self.image_bullet.get_width()/2)
+        self.y = y - (self.image_bullet.get_height())
 
 
-        if self.y > 0 and (bullet_collided_star == False): 
+
+    # DRAW 
+    def draw(self, bullet_hit_star):
+
+        if self.y > 0 and (bullet_hit_star == False): 
             
             self.y = self.y - self.bullet_velocity  
             self.rect_bullet.topleft = (self.x,self.y)   

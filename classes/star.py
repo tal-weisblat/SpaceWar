@@ -1,15 +1,15 @@
 
 import pygame as pg 
 import numpy as np
-import time 
-
-
-VEL_STAR      = 1
 
 
 
+VEL_STAR      = 2
 
-WHITE = (255,255,255)     # screen color (rgb)     
+
+
+
+#WHITE = (255,255,255)     # screen color (rgb)     
 SCREEN_WIDTH  = 500       # screen shape  
 SCREEN_HEIGHT = 650  
 pg.display.set_caption('TicTacToe')                            # title 
@@ -51,54 +51,27 @@ class Star():
         self.rect_blast.topleft = (self.x,self.y)      
 
 
-
-    # DRAW 
-    def draw(self, bullet_collided_star, bullet_collided_star_time):
-
-        # falling star 
-        if (self.y < SCREEN_HEIGHT) and (bullet_collided_star == False):             
-            self.y = self.y + VEL_STAR
-            self.rect_star.topleft = (self.x,self.y)
-            screen.blit(self.image_star, self.rect_star.topleft)
-            
-            return bullet_collided_star
+    def initialize(self):
+        self.x = np.random.randint(0, SCREEN_WIDTH-self.image_star.get_width())      
+        self.y = 0
 
 
-        # COLLISION 
-        elif (self.y < SCREEN_HEIGHT) and (bullet_collided_star == True):
-            
-            # BLAST for 2-SECONDS
-            if (time.time()<bullet_collided_star_time +2):
-                self.y = self.y + VEL_STAR
-                self.rect_star.topleft = (self.x,self.y) 
-                screen.blit(self.image_blast, self.rect_star.topleft)
+    # TEST 
+    def draw(self, label):
 
-                bullet_collided_star = True                 
-                return bullet_collided_star
-            
-            else: 
-                # NEW STAR
-                self.x = np.random.randint(0, SCREEN_WIDTH-self.image_star.get_width())      
-                self.y = 0
-                self.rect_star.topleft = (self.x,self.y) 
-                screen.blit(self.image_star, self.rect_star.topleft)   
-
-                
-                
-                bullet_collided_star = False                 
-                return bullet_collided_star
-            
-            
+        self.y = self.y + VEL_STAR
+        self.rect_star.topleft = (self.x,self.y) 
         
-        else:
-            # NEW STAR
-            self.x = np.random.randint(0, SCREEN_WIDTH-self.image_star.get_width())      
-            self.y = 0
-            self.rect_star.topleft = (self.x,self.y) 
-            screen.blit(self.image_star, self.rect_star.topleft)   
+        if label == 'blast':
+            screen.blit(self.image_blast, self.rect_star.topleft)
 
-            bullet_collided_star = False                 
-            return bullet_collided_star
+        if label == 'star':
+            screen.blit(self.image_star, self.rect_star.topleft)
+
+        
+
+
+
 
         
 
