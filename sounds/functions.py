@@ -18,6 +18,7 @@ def blast_sound():
     #pg.init()
     pg.mixer.init()
     sound = pg.mixer.Sound('sounds/files/blast.wav')  
+
     sound.play()
 
 

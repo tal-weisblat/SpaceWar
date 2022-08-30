@@ -4,9 +4,12 @@
 
 # 3 bullets at once (but no more)
 # spaceship back-flame (animated)
-# more than 1 star at screen 
+# more than 1 star at screen (different paces)
 # reshape spaceship image 
-# option for 'new game' at the final-screen 
+# option for 'new game' at the final-screen
+# how to reduce/increase the sounds of shooting etc. ? 
+# bug : once star is blasted it's possible to fire at will 
+# 
 
 
 
@@ -59,13 +62,18 @@ collision_time = 0
 run_collision_condition = True 
 collision_condition = True
 game_over_sound = 0     # controll the numebr of times gameover_sound() called 
-
 bullet_fired = False 
 
 
+# melody
+pg.mixer.init()
+pg.mixer.music.load('sounds/files/melody.mp3')
+#pg.mixer.music.set_volume(20)
+pg.mixer.music.play(20)
+
 
 while run:
-
+    
     clock.tick(60) 
     for event in pg.event.get():    
         

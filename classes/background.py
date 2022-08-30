@@ -30,7 +30,7 @@ class Background():
         screen.blit(self.background_image, (0, self.y))
         screen.blit(self.background_image, (0, self.y -  SCREEN_HEIGHT))
 
-        if self.y ==  SCREEN_HEIGHT:
-            self.y = 0 
+        if self.y ==  SCREEN_HEIGHT: self.y = 0
+             
               
 
