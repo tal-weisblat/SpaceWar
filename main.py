@@ -1,8 +1,23 @@
 
+
+# TODO 
+
+# 3 bullets at once (but no more)
+# spaceship back-flame (animated)
+# more than 1 star at screen 
+# reshape spaceship image 
+# option for 'new game' at the final-screen 
+
+
+
+
+
+
+
 # general 
 from telnetlib import GA
 import pygame as pg
-import time 
+import time as t 
  
 
 # classes
@@ -43,6 +58,10 @@ bullet_hit_star = False
 collision_time = 0
 run_collision_condition = True 
 collision_condition = True
+game_over_sound = 0     # controll the numebr of times gameover_sound() called 
+
+bullet_fired = False 
+
 
 
 while run:
@@ -54,54 +73,75 @@ while run:
         if event.type == pg.QUIT:   
             run = False
 
-        # BULLET FiRED 
-        if event.type == pg.KEYUP:
+        # BULLET FIRED 
+        
+        if (event.type == pg.KEYUP):
             if event.key == pg.K_SPACE:
-                
-                bullet_fired_sound()
-                star_blasted = False
-                bullet_hit_star = False 
-                
-                # initialize bullet 
-                x,y = spaceship.coordinates_for_bullet()
-                spaceship_width = spaceship.get_spaceship_width()
-                bullet = Bullet(x,y,spaceship_width)
-                
 
+                if not bullet_fired: 
+                
+                    bullet_fired      = True 
+
+
+                    bullet_fired_sound()
+                    
+                    if t.time() > collision_time + 1: 
+                        star_blasted = False
+                        
+                    bullet_hit_star = False 
+                    game_over_sound = 0       # control game-over sound 
+                    
+                    # initialize bullet 
+                    x,y = spaceship.coordinates()
+                    bullet.initialize(x,y,spaceship.width())
+                    
+
+
+    
 
     # COLLISION variables
-    x_star, y_star     = star.get_coordinates()                 # STAR 
-    star_width, star_height = star.get_dimensions()
-    x_bullet, y_bullet = bullet.get_coordinates()               # BULLET 
-    bullet_width, bullet_height = bullet.get_dimensions()
+    x_star, y_star              = star.coordinates()                 # STAR 
+    star_width, star_height     = star.dimensions()
+    x_bullet, y_bullet          = bullet.coordinates()               # BULLET 
+    bullet_width, bullet_height = bullet.dimensions()
+
+    
+    # condition : 1 bullet at a time 
+    if (y_bullet < 2) or star_blasted:  
+        bullet_fired = False 
 
 
     # CONDITION (for collision)
-    if  (x_star < x_bullet + bullet_width) and\
-        (x_bullet + bullet_width < x_star + star_width) and\
-        (y_bullet < y_star + star_height)  and\
+    if  (x_star < x_bullet + bullet_width) &\
+        (x_bullet + bullet_width < x_star + star_width) &\
+        (y_bullet < y_star + star_height)  &\
         (collision_condition): 
         
         blast_sound()  
-        collision_condition  = False 
-        star_blasted         = True
-        bullet_hit_star = True
-        collision_time = time.time()
+        collision_condition = False 
+        star_blasted        = True
+        bullet_hit_star     = True
+        collision_time      = t.time()
 
         # initialize bullet
-        x,y = spaceship.coordinates_for_bullet()
-        spaceship_width = spaceship.get_spaceship_width()
-        bullet.initialize(x,y,spaceship_width) 
+        x,y = spaceship.coordinates()
+        bullet.initialize(x, y, spaceship.width()) 
 
     
     # FIRST LAYER 
     background.draw()
 
 
-    # GAME-OVER : add 'star-vanish', 'game-over', sound, option for new game  
+    # GAME-OVER : add option for new game  
     if (y_star == SCREEN_HEIGHT) and (star_blasted == False): 
+
+        
+        # sound 
+        if game_over_sound == 0:
+            gameover_sound()
+            game_over_sound = 1 
+        
         gameover.draw()
-        #gameover_sound()
         pg.display.update()
         continue
 
@@ -113,7 +153,7 @@ while run:
 
     
     # initialize star
-    time_condition = time.time() < collision_time + 1
+    time_condition = t.time() < collision_time + 1
     if (star_blasted == False) & (y_star > SCREEN_HEIGHT): 
         collision_condition = True
         star.initialize()

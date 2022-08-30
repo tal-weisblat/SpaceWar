@@ -15,8 +15,22 @@ screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))     # game window (wi
 class Background():
 
     def __init__ (self):
-        self.background_image = pg.image.load("images/space.jpg")
+        
+        image = pg.image.load("images/background.jpg")
+        # rescaling image according to screen
+        self.background_image = pg.transform.scale(image, (SCREEN_WIDTH, SCREEN_HEIGHT))      
+
+        self.y = 0
+        
     
     def draw(self):
-        screen.blit(self.background_image, (0, 0))
+
+        self.y = self.y + 1
+
+        screen.blit(self.background_image, (0, self.y))
+        screen.blit(self.background_image, (0, self.y -  SCREEN_HEIGHT))
+
+        if self.y ==  SCREEN_HEIGHT:
+            self.y = 0 
+              
 

@@ -3,7 +3,6 @@
 import pygame as pg 
 
 
-#WHITE = (255,255,255)     # screen color (rgb)     
 SCREEN_WIDTH  = 500       # screen shape  
 SCREEN_HEIGHT = 650  
 pg.display.set_caption('TicTacToe')                            # title 
@@ -24,8 +23,8 @@ class GameOver():
         self.image_game_over = pg.transform.scale(self.image,(scale*int(self.image.get_width()),scale*int(self.image.get_height())))  
 
         # star-coordinates 
-        self.x = 100
-        self.y = 100
+        self.x = SCREEN_WIDTH/2  - self.image_game_over.get_width()/2
+        self.y = SCREEN_HEIGHT/2 - self.image_game_over.get_height()/2
         
         # star-rectangle 
         self.rect_game_over = self.image_game_over.get_rect()

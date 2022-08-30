@@ -87,11 +87,11 @@ class Star():
 
 
     # get star coordinates 
-    def get_coordinates(self):
+    def coordinates(self):
         return (self.x,self.y)
     
     # get star dimensions 
-    def get_dimensions(self): 
+    def dimensions(self): 
         return (self.image_star.get_width(), self.image_star.get_height())
             
             

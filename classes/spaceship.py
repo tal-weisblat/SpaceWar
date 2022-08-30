@@ -30,19 +30,19 @@ class Spaceship():
 
         # SETTINGS  
         image_spaceship = 'images/spaceship.png'
-        scale_spaceship  = 0.1
+        scale_spaceship  = 0.09
 
         # image
         self.image = pg.image.load(image_spaceship).convert_alpha()
         self.image_spaceship = pg.transform.scale(self.image,(scale_spaceship*int(self.image.get_width()),scale_spaceship*int(self.image.get_height())))  
 
         # coordinates 
-        self.x_spaceship = x 
-        self.y_spaceship = y 
+        self.x = x 
+        self.y = y 
         
         # rectangle 
         self.rect_spaceship = self.image_spaceship.get_rect()
-        self.rect_spaceship.topleft = (self.x_spaceship,self.y_spaceship)     # adjusting according to coordinates 
+        self.rect_spaceship.topleft = (self.x,self.y)     # adjusting according to coordinates 
 
         
 
@@ -52,13 +52,13 @@ class Spaceship():
 
 
     # SPACESHIP COORDINATEs for BULLET 
-    def coordinates_for_bullet(self):
-        x = self.x_spaceship 
-        y = self.y_spaceship 
+    def coordinates(self):
+        x = self.x 
+        y = self.y 
         return (x,y)
 
 
-    def get_spaceship_width(self):
+    def width(self):
         return self.image_spaceship.get_width()
 
 
@@ -68,20 +68,20 @@ class Spaceship():
         keys = pg.key.get_pressed()        
         # RIGHT 
         if keys[pg.K_RIGHT]:
-            self.x_spaceship = self.x_spaceship + VEL_SPACESHIP 
-            self.rect_spaceship.topleft = (self.x_spaceship,self.y_spaceship)
+            self.x = self.x + VEL_SPACESHIP 
+            self.rect_spaceship.topleft = (self.x,self.y)
         # LEFT 
         if keys[pg.K_LEFT]:
-            self.x_spaceship = self.x_spaceship - VEL_SPACESHIP 
-            self.rect_spaceship.topleft = (self.x_spaceship,self.y_spaceship)
+            self.x = self.x - VEL_SPACESHIP 
+            self.rect_spaceship.topleft = (self.x,self.y)
         # UP 
         if keys[pg.K_DOWN]:
-            self.y_spaceship = self.y_spaceship + VEL_SPACESHIP
-            self.rect_spaceship.topleft = (self.x_spaceship,self.y_spaceship)   
+            self.y = self.y + VEL_SPACESHIP
+            self.rect_spaceship.topleft = (self.x,self.y)   
         # DOWN
         if keys[pg.K_UP]:
-            self.y_spaceship = self.y_spaceship - VEL_SPACESHIP
-            self.rect_spaceship.topleft = (self.x_spaceship,self.y_spaceship)   
+            self.y = self.y - VEL_SPACESHIP
+            self.rect_spaceship.topleft = (self.x,self.y)   
 
     
 

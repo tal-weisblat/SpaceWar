@@ -24,7 +24,7 @@ class Bullet():
         # settings
         image_bullet         = 'images/bullet.png'
         scale_bullet         = 0.045
-        self.bullet_velocity = 11 
+        self.bullet_velocity = 13
 
         # image   
         self.image = pg.image.load(image_bullet).convert_alpha()
@@ -48,7 +48,7 @@ class Bullet():
     # DRAW 
     def draw(self, bullet_hit_star):
 
-        if self.y > 0 and (bullet_hit_star == False): 
+        if (self.y > 0) and (bullet_hit_star == False): 
             
             self.y = self.y - self.bullet_velocity  
             self.rect_bullet.topleft = (self.x,self.y)   
@@ -60,11 +60,11 @@ class Bullet():
 
 
     # get coordinates 
-    def get_coordinates(self):
+    def coordinates(self):
         return(self.x,self.y)
     
     # get bullet dimensions 
-    def get_dimensions(self):
+    def dimensions(self):
         return (self.image_bullet.get_width(), self.image_bullet.get_height())
     
 
