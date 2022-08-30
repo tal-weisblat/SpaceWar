@@ -19,3 +19,10 @@ def blast_sound():
     pg.mixer.init()
     sound = pg.mixer.Sound('sounds/files/blast.wav')  
     sound.play()
+
+
+def gameover_sound():
+
+    pg.mixer.init()
+    sound = pg.mixer.Sound('sounds/files/game_over.wav')  
+    sound.play()

@@ -1,7 +1,7 @@
 
 import pygame as pg 
 import numpy as np
-
+import time 
 
 
 VEL_STAR      = 2
@@ -57,16 +57,26 @@ class Star():
 
 
     # TEST 
-    def draw(self, label):
+    def draw(self, star_blasted, collision_time):
 
         self.y = self.y + VEL_STAR
         self.rect_star.topleft = (self.x,self.y) 
-        
-        if label == 'blast':
-            screen.blit(self.image_blast, self.rect_star.topleft)
 
-        if label == 'star':
-            screen.blit(self.image_star, self.rect_star.topleft)
+        time_condition = time.time() - collision_time < 1      # less than 1 second 
+
+        if star_blasted == False:
+            screen.blit(self.image_star, self.rect_star.topleft)                               
+        
+        if (star_blasted == True) and (time_condition == True):
+            screen.blit(self.image_blast, self.rect_star.topleft) 
+
+            
+        
+        # if label == 'blast':
+        #     screen.blit(self.image_blast, self.rect_star.topleft)
+
+        # if label == 'star':
+        #     screen.blit(self.image_star, self.rect_star.topleft)
 
         
 
