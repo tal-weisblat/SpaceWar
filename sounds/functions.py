@@ -22,7 +22,7 @@ def blast_sound():
     sound.play()
 
 
-def gameover_sound():
+def gameOver_sound():
 
     pg.mixer.init()
     sound = pg.mixer.Sound('sounds/files/game_over.wav')  

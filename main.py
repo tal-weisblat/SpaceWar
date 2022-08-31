@@ -2,11 +2,11 @@
 
 # TODO 
 
+# CREATE functionality for NEW-GAME option  
 # 3 bullets at once (but no more)
 # spaceship back-flame (animated)
 # more than 1 star at screen (different paces)
 # reshape spaceship image 
-# option for 'new game' at the final-screen
 # how to reduce/increase the sounds of shooting etc. ? 
 # bug : once star is blasted it's possible to fire at will 
 # 
@@ -34,7 +34,7 @@ from classes.game_over  import GameOver
 # sounds 
 from sounds.functions import blast_sound
 from sounds.functions import bullet_fired_sound
-from sounds.functions import gameover_sound
+from sounds.functions import gameOver_sound
 
 
 SCREEN_WIDTH  = 500       # screen shape  
@@ -64,6 +64,7 @@ collision_condition = True
 game_over_sound = 0     # controll the numebr of times gameover_sound() called 
 bullet_fired = False 
 
+mouse_clicked = False # for YES & NO buttons 
 
 # melody
 pg.mixer.init()
@@ -82,15 +83,12 @@ while run:
             run = False
 
         # BULLET FIRED 
-        
         if (event.type == pg.KEYUP):
             if event.key == pg.K_SPACE:
 
                 if not bullet_fired: 
                 
-                    bullet_fired      = True 
-
-
+                    bullet_fired  = True
                     bullet_fired_sound()
                     
                     if t.time() > collision_time + 1: 
@@ -143,13 +141,17 @@ while run:
     # GAME-OVER : add option for new game  
     if (y_star == SCREEN_HEIGHT) and (star_blasted == False): 
 
-        
-        # sound 
+        # sound (played only once)
         if game_over_sound == 0:
-            gameover_sound()
+            gameOver_sound()
             game_over_sound = 1 
         
-        gameover.draw()
+        gameover.draw()                                                # draw   
+        pos = pg.mouse.get_pos()                                       # cursor position 
+        run = gameover.no_button_clicked(pos,mouse_clicked)            # EXIT GAME 
+        mouse_clicked = gameover.yes_button_clicked(pos,mouse_clicked) # NEW GAME 
+        if (pg.mouse.get_pressed()[0] == 0): mouse_clicked = False     # 
+
         pg.display.update()
         continue
 
