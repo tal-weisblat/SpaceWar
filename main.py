@@ -2,6 +2,9 @@
 
 # TODO 
 
+
+# simplify flame class 
+
 # CREATE functionality for NEW-GAME option  
 # 3 bullets at once (but no more)
 # spaceship back-flame (animated)
@@ -29,6 +32,7 @@ from classes.spaceship  import Spaceship
 from classes.star       import Star 
 from classes.bullet     import Bullet
 from classes.game_over  import GameOver
+from classes.flame      import Flame
 
 
 # sounds 
@@ -50,6 +54,8 @@ spaceship  = Spaceship(280,490)
 star       = Star()
 bullet     = Bullet(0,0,0)
 gameover   = GameOver()
+
+flame = Flame()
 
 
 
@@ -104,6 +110,8 @@ while run:
 
 
     
+    
+
 
     # COLLISION variables
     x_star, y_star              = star.coordinates()                 # STAR 
@@ -136,6 +144,17 @@ while run:
     
     # FIRST LAYER 
     background.draw()
+    
+    
+    # FLAME 
+    x,y = spaceship.coordinates()
+    height = spaceship.height()
+    width  = spaceship.width()
+    flame.update_coordinates(x,y, height, width)
+    flame.update_img()
+    flame.draw()
+    
+
 
 
     # GAME-OVER : add option for new game  

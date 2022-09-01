@@ -61,6 +61,9 @@ class Spaceship():
     def width(self):
         return self.image_spaceship.get_width()
 
+    def height(self):
+        return self.image_spaceship.get_height()
+
 
     # MOVEMENT  
     def move_spaceship(self):
