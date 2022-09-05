@@ -2,19 +2,8 @@
 
 # TODO 
 
-
-
-# CREATE functionality for NEW-GAME option  
-# 3 bullets at once (but no more)
-# more than 1 star at screen (different paces ? zigzaging ?)
-# reshape spaceship image 
-# how to reduce/increase the sounds of shooting etc. ? 
-# bug : once star is blasted it's possible to fire at will 
-# various BUGs along the code (look for them)
-
-# imporive falling-star ANIMATION (add better stream of pictures)
-
-
+# APPLY NEW bullets list throughout the code 
+# ERASE the old bullet approach 
 
 
 
