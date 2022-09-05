@@ -207,7 +207,8 @@ while run:
 
     
 
-    #spaceship.movement()               # moving spaceship on screen 
+    # branch master : before change 
+    spaceship.movement()               # moving spaceship on screen 
     spaceship.draw()                   # draw spaceship
     bullet.draw(bullet_hit_star)       # draw bullet 
     bullet.update_move()               # movement on screen
