@@ -12,11 +12,14 @@ class Flame():
     def __init__(self):
 
         scale = 0.07
-        img = pg.image.load('flames/flame_1.png')
+        img = pg.image.load(f'images/flames/flame_1.png')
         img = pg.transform.scale(img, (img.get_width()*scale,(img.get_height()*scale)) )   # scale 
         img = pg.transform.rotate(img,270)                                                 # rotate 
         self.flame_width  = img.get_width()
         
+        self.turnOff = False         # turn off flame once game has ended
+
+
         # for animation 
         self.index = 1       
         
@@ -29,14 +32,14 @@ class Flame():
         # ANIMATION :list of all images 
         self.img_list = []      
         for i in range(1,11):
-            img = pg.image.load(f'flames/flame_{i}.png')
+            img = pg.image.load(f'images/flames/flame_{i}.png')
             img = pg.transform.rotate(img,270)
             img = pg.transform.scale(img, (img.get_width()*scale,(img.get_height()*scale)) )
             self.img_list.append(img)
 
         
         
-    # BELOW SPACESHIP
+    # position below spaceship
     def update_coordinates(self, x, y, spaceship_heigth, spaceship_width):
         self.x = x - (self.flame_width - spaceship_width)/2 
         self.y = y + spaceship_heigth + 1
@@ -50,5 +53,10 @@ class Flame():
             
     # DRAW         
     def draw(self):
-        screen.blit(self.image, self.rect.topleft)
+        if (not self.turnOff):
+            screen.blit(self.image, self.rect.topleft)
+    
+    # TURN OFF 
+    def turn_off(self):
+        self.turnOff = True
 

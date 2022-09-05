@@ -4,7 +4,7 @@ import numpy as np
 import time 
 
 
-VEL_STAR      = 2
+#VEL_STAR      = 2
 
 
 
@@ -22,76 +22,86 @@ class Star():
     def __init__(self): 
         
         # SETTINGS 
-        img_star = 'images/star.png'
+        img_star  = 'images/falling_star/falling_star_1.png'
         img_blast = 'images/blast.png' 
-        scale_star  = 0.2
-        scale_blast = 0.05
+        scale_star       = 0.17
+        scale_blast      = 0.05
+        self.velocity    = 2
+        self.turnOff     = False
 
-
-        # star-image  
+        # STAR  
         self.image = pg.image.load(img_star).convert_alpha()
         self.image_star = pg.transform.scale(self.image,(scale_star*int(self.image.get_width()),scale_star*int(self.image.get_height())))  
-
-        # star-coordinates 
         self.x = np.random.randint(0, SCREEN_WIDTH-self.image_star.get_width())
         self.y = 0 
-        
-        # star-rectangle 
         self.rect_star = self.image_star.get_rect()
-        self.rect_star.topleft = (self.x,self.y)           
+        self.rect_star.topleft = (self.x,self.y)          
 
-        # --------------
 
-        # blast image 
+        # ANIMATION
+        self.index = 0
+        self.image_list = []      
+        for i in range(1,11):
+            img = pg.image.load(f'images/falling_star/falling_star_{i}.png')
+            img = pg.transform.rotate(img,90)
+            img = pg.transform.scale(img, (img.get_width()*scale_star,(img.get_height()*scale_star)) )
+            self.image_list.append(img) 
+
+        # BLAST 
         self.image = pg.image.load(img_blast).convert_alpha()
         self.image_blast = pg.transform.scale(self.image,(scale_blast*int(self.image.get_width()),scale_blast*int(self.image.get_height())))  
-        
-        # rectangle 
         self.rect_blast = self.image_blast.get_rect()
         self.rect_blast.topleft = (self.x,self.y)      
 
-
-    def initialize(self):
-        self.x = np.random.randint(0, SCREEN_WIDTH-self.image_star.get_width())      
-        self.y = 0
+         
 
 
-    # TEST 
+    # ANIMATION
+    def update_image(self):
+        self.image = self.image_list[self.index]
+        self.index += 1 
+        if (self.index == 5): self.index = 0
+    
+    # DRAW  
     def draw(self, star_blasted, collision_time):
 
-        self.y = self.y + VEL_STAR
-        self.rect_star.topleft = (self.x,self.y) 
+        if (not self.turnOff): 
+            self.y = self.y + self.velocity
+            self.rect_star.topleft = (self.x,self.y) 
+            time_condition = time.time() - collision_time < 1      # less than 1 second 
 
-        time_condition = time.time() - collision_time < 1      # less than 1 second 
-
-        if star_blasted == False:
-            screen.blit(self.image_star, self.rect_star.topleft)                               
-        
-        if (star_blasted == True) and (time_condition == True):
-            screen.blit(self.image_blast, self.rect_star.topleft) 
-
+            # STAR 
+            if star_blasted == False:                
+                image = self.image_list[self.index]                                
+                screen.blit(image, self.rect_star.topleft)                               
             
-        
-        # if label == 'blast':
-        #     screen.blit(self.image_blast, self.rect_star.topleft)
-
-        # if label == 'star':
-        #     screen.blit(self.image_star, self.rect_star.topleft)
-
-        
+            # BLAST 
+            if (star_blasted == True) and (time_condition == True):      
+                screen.blit(self.image_blast, self.rect_star.topleft) 
 
 
-
-
-        
-
-
-    # get star coordinates 
+    
+    # COORDINATES 
     def coordinates(self):
         return (self.x,self.y)
     
-    # get star dimensions 
+    # DIMENSIONS
     def dimensions(self): 
         return (self.image_star.get_width(), self.image_star.get_height())
+
+    # INIT 
+    def initialize(self):
+
+        # coordinates (random)
+        self.x = np.random.randint(0, SCREEN_WIDTH-self.image_star.get_width())      
+        self.y = 0
+
+        # velocity (random)
+        self.velocity = np.random.randint(2,5)
+
+
+    def turn_off(self):
+        self.turnOff = True
+
             
             

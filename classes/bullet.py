@@ -44,14 +44,19 @@ class Bullet():
         self.y = y - (self.image_bullet.get_height())
 
 
+    # UPDATE 
+    def update_move(self):
+        self.y = self.y - self.bullet_velocity  
+        self.rect_bullet.topleft = (self.x,self.y)   
+
 
     # DRAW 
     def draw(self, bullet_hit_star):
 
         if (self.y > 0) and (bullet_hit_star == False): 
             
-            self.y = self.y - self.bullet_velocity  
-            self.rect_bullet.topleft = (self.x,self.y)   
+            #self.y = self.y - self.bullet_velocity  
+            #self.rect_bullet.topleft = (self.x,self.y)   
             screen.blit(self.image_bullet, self.rect_bullet.topleft)
             
         

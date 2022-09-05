@@ -44,11 +44,12 @@ class Spaceship():
         self.rect_spaceship = self.image_spaceship.get_rect()
         self.rect_spaceship.topleft = (self.x,self.y)     # adjusting according to coordinates 
 
-        
+        self.turnOff = False 
 
     # DRAW 
     def draw(self):
-        screen.blit(self.image_spaceship, self.rect_spaceship.topleft)   
+        if (not self.turnOff):
+            screen.blit(self.image_spaceship, self.rect_spaceship.topleft)   
 
 
     # SPACESHIP COORDINATEs for BULLET 
@@ -66,7 +67,7 @@ class Spaceship():
 
 
     # MOVEMENT  
-    def move_spaceship(self):
+    def movement(self):
         
         keys = pg.key.get_pressed()        
         # RIGHT 
@@ -86,6 +87,10 @@ class Spaceship():
             self.y = self.y - VEL_SPACESHIP
             self.rect_spaceship.topleft = (self.x,self.y)   
 
+
+
+    def turn_off(self):
+        self.turnOff = True 
     
 
 
