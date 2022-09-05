@@ -35,8 +35,8 @@ class Bullet():
         self.y = y - (self.image_bullet.get_height())
 
         # rectangle 
-        self.rect_bullet = self.image_bullet.get_rect()
-        self.rect_bullet.topleft = (self.x,self.y)     
+        self.rect = self.image_bullet.get_rect()
+        self.rect.topleft = (self.x,self.y)     
         
     
     def initialize(self, x, y, spaceship_width):
@@ -47,7 +47,7 @@ class Bullet():
     # UPDATE 
     def update_move(self):
         self.y = self.y - self.bullet_velocity  
-        self.rect_bullet.topleft = (self.x,self.y)   
+        self.rect.topleft = (self.x,self.y)   
 
 
     # DRAW 
@@ -57,7 +57,7 @@ class Bullet():
             
             #self.y = self.y - self.bullet_velocity  
             #self.rect_bullet.topleft = (self.x,self.y)   
-            screen.blit(self.image_bullet, self.rect_bullet.topleft)
+            screen.blit(self.image_bullet, self.rect.topleft)
             
         
         

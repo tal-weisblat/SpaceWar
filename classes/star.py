@@ -4,12 +4,9 @@ import numpy as np
 import time 
 
 
-#VEL_STAR      = 2
 
 
 
-
-#WHITE = (255,255,255)     # screen color (rgb)     
 SCREEN_WIDTH  = 500       # screen shape  
 SCREEN_HEIGHT = 650  
 pg.display.set_caption('TicTacToe')                            # title 
@@ -34,8 +31,8 @@ class Star():
         self.image_star = pg.transform.scale(self.image,(scale_star*int(self.image.get_width()),scale_star*int(self.image.get_height())))  
         self.x = np.random.randint(0, SCREEN_WIDTH-self.image_star.get_width())
         self.y = 0 
-        self.rect_star = self.image_star.get_rect()
-        self.rect_star.topleft = (self.x,self.y)          
+        self.rect = self.image_star.get_rect()
+        self.rect.topleft = (self.x,self.y)          
 
 
         # ANIMATION
@@ -67,17 +64,17 @@ class Star():
 
         if (not self.turnOff): 
             self.y = self.y + self.velocity
-            self.rect_star.topleft = (self.x,self.y) 
+            self.rect.topleft = (self.x,self.y) 
             time_condition = time.time() - collision_time < 1      # less than 1 second 
 
             # STAR 
             if star_blasted == False:                
                 image = self.image_list[self.index]                                
-                screen.blit(image, self.rect_star.topleft)                               
+                screen.blit(image, self.rect.topleft)                               
             
             # BLAST 
             if (star_blasted == True) and (time_condition == True):      
-                screen.blit(self.image_blast, self.rect_star.topleft) 
+                screen.blit(self.image_blast, self.rect.topleft) 
 
 
     

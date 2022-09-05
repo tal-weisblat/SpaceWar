@@ -54,7 +54,6 @@ spaceship  = Spaceship(280,490)
 gameOver   = GameOver()
 flame      = Flame()
 star       = Star()
-
 bullet     = Bullet(0,0,0)
 
 
@@ -66,16 +65,41 @@ run = True                             #
 is_star_blasted = False                # true or false  
 bullet_hit_star = False                # used for eliminating bullet from screen once collision took place  
 bullet_star_collision_time = 0         # the exact bullet-star-collision-time 
-bullet_did_not_hit_star = True         # bullet & star status before hitting (one another)
+bullet_did_not_hit_star_before = True         # bullet & star status before hitting (one another)
 game_over_sound = 0                    # controll the numebr of times gameover_sound() called 
 bullet_fired = False                   # True only when bullet fired and on the screen 
 mouse_clicked = False                  # for YES & NO buttons 
+
+
+
+
 
 
 # background music 
 pg.mixer.init()
 pg.mixer.music.load('sounds/files/melody.mp3')
 pg.mixer.music.play()
+
+
+
+
+
+SCREEN_WIDTH  = 500       # screen shape  
+SCREEN_HEIGHT = 650  
+pg.display.set_caption('SpaceWar')                            # title 
+screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))     # game window (width & height)
+
+
+
+
+
+# TEST : changing bullet settings 
+MAX_BULLETS = 3                      # maximal number of bullets on screen 
+bullets     = []                     # bullet magazine 
+RED = (255,0,0)                      # the color of future to be bullet 
+bullet_test = pg.Rect(100,100,5,10)  # 
+
+
 
 
 while run:
@@ -88,22 +112,20 @@ while run:
 
         # BULLET FIRED 
         if (event.type == pg.KEYUP):
-            if event.key == pg.K_SPACE:
-
-                if not bullet_fired: 
+            if event.key == pg.K_SPACE and not bullet_fired :
                 
-                    bullet_fired  = True
-                    bullet_fired_sound()
+                bullet_fired  = True
+                bullet_fired_sound()
+                
+                if t.time() > bullet_star_collision_time + 1: 
+                    is_star_blasted = False
                     
-                    if t.time() > bullet_star_collision_time + 1: 
-                        is_star_blasted = False
-                        
-                    bullet_hit_star = False 
-                    game_over_sound = 0          # control game-over sound 
-                    
-                    # initialize bullet 
-                    x,y = spaceship.coordinates()
-                    bullet.initialize(x,y,spaceship.width())
+                bullet_hit_star = False 
+                game_over_sound = 0          # control game-over sound 
+                
+                # initialize bullet 
+                x,y = spaceship.coordinates()
+                bullet.initialize(x,y,spaceship.width())
                     
 
 
@@ -114,41 +136,28 @@ while run:
     bullet_width, bullet_height = bullet.dimensions()
 
     
+    
+    
     # condition : 1 bullet at a time 
     if (y_bullet < 2) or is_star_blasted:  
         bullet_fired = False 
 
 
     # shorter collision version 
-    if star.rect_star.colliderect(bullet.rect_bullet) and bullet_did_not_hit_star:
-        print ('HIT')
+    if star.rect.colliderect(bullet.rect) and bullet_did_not_hit_star_before:
+    
         blast_sound()  
-        bullet_did_not_hit_star    = False 
-        is_star_blasted            = True
-        bullet_hit_star            = True
-        bullet_star_collision_time = t.time()
+        bullet_did_not_hit_star_before  = False 
+        is_star_blasted                 = True
+        bullet_hit_star                 = True
+        bullet_star_collision_time      = t.time()
 
         # initialize bullet
         x,y = spaceship.coordinates()
         bullet.initialize(x, y, spaceship.width()) 
 
 
-    # CONDITION (for collision)
-    # if  (x_star < x_bullet + bullet_width) &\
-    #     (x_bullet + bullet_width < x_star + star_width) &\
-    #     (y_bullet < y_star + star_height)  &\
-    #     (bullet_did_not_hit_star): 
-        
-    #     blast_sound()  
-    #     bullet_did_not_hit_star    = False 
-    #     is_star_blasted            = True
-    #     bullet_hit_star            = True
-    #     bullet_star_collision_time = t.time()
-
-    #     # initialize bullet
-    #     x,y = spaceship.coordinates()
-    #     bullet.initialize(x, y, spaceship.width()) 
-
+    
     time_condition = t.time() < bullet_star_collision_time + 1
     
 
@@ -156,6 +165,7 @@ while run:
 
     # FIRST LAYER 
     background.draw()
+    #pg.draw.rect(screen, RED, bullet_test)
     
     # FLAME 
     x,y = spaceship.coordinates()
@@ -173,6 +183,7 @@ while run:
     # GAME-OVER 
     if (y_star > SCREEN_HEIGHT) and (is_star_blasted == False) and (run == True): 
 
+
         if game_over_sound == 0:                                       # sound (played once)
             gameOver_sound()
             game_over_sound = 1 
@@ -185,22 +196,19 @@ while run:
         # TURN-OFF 
         flame.turn_off()                                               
         spaceship.turn_off()
-        star.turn_off()          # BUG: doesnt function ... 
+        star.turn_off()                                                # BUG: doesnt function ... 
         
-
-        
-        
-        if (pg.mouse.get_pressed()[0] == 0): mouse_clicked = False     # 
+        if (pg.mouse.get_pressed()[0] == 0): mouse_clicked = False     
         pg.display.update()
         
 
     # initialize star
     elif (is_star_blasted == False) & (y_star > SCREEN_HEIGHT): 
-        bullet_did_not_hit_star = True
+        bullet_did_not_hit_star_before = True
         star.initialize()
 
     elif (is_star_blasted == True) & (not time_condition):
-        bullet_did_not_hit_star = True 
+        bullet_did_not_hit_star_before = True 
         is_star_blasted        = False
         star.initialize()
 
@@ -214,7 +222,6 @@ while run:
     star.update_image()                # for animation 
     star.draw(is_star_blasted, bullet_star_collision_time)  
 
-    
     pg.display.update()
     
 
