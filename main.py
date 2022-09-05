@@ -207,7 +207,7 @@ while run:
 
     
 
-    spaceship.movement()               # moving spaceship on screen 
+    #spaceship.movement()               # moving spaceship on screen 
     spaceship.draw()                   # draw spaceship
     bullet.draw(bullet_hit_star)       # draw bullet 
     bullet.update_move()               # movement on screen
