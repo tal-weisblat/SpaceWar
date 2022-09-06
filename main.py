@@ -1,211 +1,197 @@
 
 
-# TODO 
 
+# TODO 
 # APPLY NEW bullets list throughout the code 
 # ERASE the old bullet approach 
 
 
 
-
-
-# general 
-from telnetlib import GA
-import pygame as pg
+# packages  
+import pygame as pygame
 import time as t 
  
-
 # classes
 from classes.background import Background
 from classes.spaceship  import Spaceship
 from classes.star       import Star 
-from classes.bullet     import Bullet
 from classes.game_over  import GameOver
 from classes.flame      import Flame
-
-
+ 
 # sounds 
 from sounds.functions import blast_sound
 from sounds.functions import bullet_fired_sound
-from sounds.functions import gameOver_sound
 
 
-SCREEN_WIDTH  = 500       # screen shape  
-SCREEN_HEIGHT = 650  
-
-
-
-
-
-# initilize all objects  
+# initilize objects  
 background = Background()
 spaceship  = Spaceship(280,490)
 gameOver   = GameOver()
 flame      = Flame()
 star       = Star()
 
-bullet     = Bullet(0,0,0)
+
+# MUSIC (background)
+pygame.mixer.init()
+pygame.mixer.music.load('sounds/files/melody.mp3')
+pygame.mixer.music.play()
+
+# WINDOW
+SCREEN_WIDTH  = 500                                                # WINDOW shape  
+SCREEN_HEIGHT = 650  
+WINDOW = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))     # game window (width & height)
+pygame.display.set_caption('SpaceWar')                             # title 
+
+
+# BULLETs
+bullet_list   = []    # the one that's going to contain all bullets
+BULLET_VEL    = 15    # bullet velociry 
+BULLET_WIDTH  = 5     # bullet width 
+BULLET_HEIGHT = 10    # bullet heaight 
+BULLET_MAX    = 2     # magazine size (at most 3 bullets on WINDOW)
+RED = (255,0,0)       # bullet color 
+
+
+# EVENTS 
+STAR_HIT  = pygame.USEREVENT + 1 
+STAR_INIT = pygame.USEREVENT + 2  
 
 
 
 
-clock = pg.time.Clock() 
-
-run = True                             # 
-is_star_blasted = False                # true or false  
-bullet_hit_star = False                # used for eliminating bullet from screen once collision took place  
-bullet_star_collision_time = 0         # the exact bullet-star-collision-time 
-bullet_did_not_hit_star = True         # bullet & star status before hitting (one another)
-game_over_sound = 0                    # controll the numebr of times gameover_sound() called 
-bullet_fired = False                   # True only when bullet fired and on the screen 
-mouse_clicked = False                  # for YES & NO buttons 
 
 
-# background music 
-pg.mixer.init()
-pg.mixer.music.load('sounds/files/melody.mp3')
-pg.mixer.music.play()
+# DRAW 
+def draw_bullets(bullet_list):
+    for bullet in bullet_list:
+        pygame.draw.rect(WINDOW, RED, bullet)
 
 
-while run:
+# HANDLE BULLETS 
+def handle_bullets(bullet_list, yellow): 
     
-    clock.tick(60) 
-    for event in pg.event.get():    
+    for bullet in bullet_list: 
         
-        # QUIT GAME 
-        if event.type == pg.QUIT: run = False
+        bullet.y -= BULLET_VEL                                      # movement on WINDOW
+        # collision         
+        if yellow.colliderect(bullet): 
+            blast_sound()
+            pygame.event.post(pygame.event.Event(STAR_HIT))         # posting event 
+            bullet_list.remove(bullet)                              # remove bullet 
+        # reached top WINDOW 
+        elif bullet.y < 0:  
+            bullet_list.remove(bullet)
 
-        # BULLET FIRED 
-        if (event.type == pg.KEYUP):
-            if event.key == pg.K_SPACE:
 
-                if not bullet_fired: 
+
+
+
+
+
+def main():
+
+    mouse_clicked = False 
+    star.initialize()
+    stage = 'non'    
+    collision_time = t.time() - 1 
+    clock = pygame.time.Clock()         # conroll number of looping per second
+    run = True                          
+
+    while run:
+        
+        clock.tick(60) 
+        for event in pygame.event.get():    
+            
+            # STAR-HIT 
+            if event.type == STAR_HIT:
+                star.status = 'blasted'
+                stage       = '1'
+                collision_time   = t.time() 
                 
-                    bullet_fired  = True
-                    bullet_fired_sound()
-                    
-                    if t.time() > bullet_star_collision_time + 1: 
-                        is_star_blasted = False
-                        
-                    bullet_hit_star = False 
-                    game_over_sound = 0          # control game-over sound 
-                    
-                    # initialize bullet 
-                    x,y = spaceship.coordinates()
-                    bullet.initialize(x,y,spaceship.width())
-                    
+            # QUIT-GAME 
+            if event.type == pygame.QUIT: 
+                run = False
+
+            # BULLET-FIRED 
+            if (event.type == pygame.KEYUP):
+                if event.key == pygame.K_SPACE:
+                    if (len(bullet_list) < BULLET_MAX):
+
+                        bullet_fired_sound()
+                        x,y = spaceship.coordinates()
+                        z   = spaceship.width()
+                        bullet = pygame.Rect(x + z/2 - BULLET_WIDTH/2, y, BULLET_WIDTH, BULLET_HEIGHT)  
+                        bullet_list.append(bullet)                               # add bullet to list 
 
 
-    # COLLISION variables
-    x_star, y_star              = star.coordinates()                 # STAR 
-    star_width, star_height     = star.dimensions()
-    x_bullet, y_bullet          = bullet.coordinates()               # BULLET 
-    bullet_width, bullet_height = bullet.dimensions()
+        # FIRST LAYER 
+        background.draw()
+        
+        # BULLETS
+        handle_bullets(bullet_list, star.rect_star)
+        draw_bullets(bullet_list)
+        
 
-    
-    # condition : 1 bullet at a time 
-    if (y_bullet < 2) or is_star_blasted:  
-        bullet_fired = False 
+        # SPACESHIP
+        spaceship.movement()               # moving spaceship on WINDOW 
+        spaceship.draw()                   # draw spaceship
 
 
-    # shorter collision version 
-    if star.rect_star.colliderect(bullet.rect_bullet) and bullet_did_not_hit_star:
-        print ('HIT')
-        blast_sound()  
-        bullet_did_not_hit_star    = False 
-        is_star_blasted            = True
-        bullet_hit_star            = True
-        bullet_star_collision_time = t.time()
-
-        # initialize bullet
+        # FLAME 
         x,y = spaceship.coordinates()
-        bullet.initialize(x, y, spaceship.width()) 
+        height = spaceship.height()
+        width  = spaceship.width()
+        flame.update_coordinates(x,y, height, width)
+        flame.update_img()
+        flame.draw()
 
 
-    # CONDITION (for collision)
-    # if  (x_star < x_bullet + bullet_width) &\
-    #     (x_bullet + bullet_width < x_star + star_width) &\
-    #     (y_bullet < y_star + star_height)  &\
-    #     (bullet_did_not_hit_star): 
-        
-    #     blast_sound()  
-    #     bullet_did_not_hit_star    = False 
-    #     is_star_blasted            = True
-    #     bullet_hit_star            = True
-    #     bullet_star_collision_time = t.time()
-
-    #     # initialize bullet
-    #     x,y = spaceship.coordinates()
-    #     bullet.initialize(x, y, spaceship.width()) 
-
-    time_condition = t.time() < bullet_star_collision_time + 1
-    
-
-# -------- move this block to the buttom ------------
-
-    # FIRST LAYER 
-    background.draw()
-    
-    # FLAME 
-    x,y = spaceship.coordinates()
-    height = spaceship.height()
-    width  = spaceship.width()
-    flame.update_coordinates(x,y, height, width)
-    flame.update_img()
-    flame.draw()
-    
-# -------- move this block to the buttom ------------
-
-
-
-
-    # GAME-OVER 
-    if (y_star > SCREEN_HEIGHT) and (is_star_blasted == False) and (run == True): 
-
-        if game_over_sound == 0:                                       # sound (played once)
-            gameOver_sound()
-            game_over_sound = 1 
-        
-        gameOver.draw()                                                # draw   
-        pos = pg.mouse.get_pos()                                       # cursor position 
-        run = gameOver.exit_game(pos,mouse_clicked)                    # EXIT GAME  
-        mouse_clicked = gameOver.new_game(pos,mouse_clicked)           # BUG: no functionality ... 
-
-        # TURN-OFF 
-        flame.turn_off()                                               
-        spaceship.turn_off()
-        star.turn_off()          # BUG: doesnt function ... 
-        
+        # STAR      
+        star.update_image()                # for animation 
+        star.draw_star()
 
         
-        
-        if (pg.mouse.get_pressed()[0] == 0): mouse_clicked = False     # 
-        pg.display.update()
-        
 
-    # initialize star
-    elif (is_star_blasted == False) & (y_star > SCREEN_HEIGHT): 
-        bullet_did_not_hit_star = True
-        star.initialize()
+        star_y_coordinate = star.y_coordinate()
+        if (t.time() > collision_time + 0.7) and stage == '1': 
+            stage = '2'
+            star.status = 'not blasted'
+        
+        elif (t.time() > collision_time + 0.7) and stage == '2':
+            stage = 'non'
+            star.initialize()
 
-    elif (is_star_blasted == True) & (not time_condition):
-        bullet_did_not_hit_star = True 
-        is_star_blasted        = False
-        star.initialize()
+        elif (star_y_coordinate > SCREEN_HEIGHT) and (star.status == 'not blasted'):
+            
+            pos = pygame.mouse.get_pos()                        # mouse position 
+            if gameOver.new_game(pos,mouse_clicked)  : main()   # NEW-GAME 
+            if gameOver.exit_game(pos,mouse_clicked) : break    # EXIT-GAME 
+            if (pygame.mouse.get_pressed()[0] == 0): mouse_clicked = False
+            gameOver.draw()    
+            
+
+
+        pygame.display.update()
+            
+
+            
+            
+            
+
+if __name__ == '__main__':
+    main()
 
 
     
 
-    # branch master : before change 
-    spaceship.movement()               # moving spaceship on screen 
-    spaceship.draw()                   # draw spaceship
-    bullet.draw(bullet_hit_star)       # draw bullet 
-    bullet.update_move()               # movement on screen
-    star.update_image()                # for animation 
-    star.draw(is_star_blasted, bullet_star_collision_time)  
+
+
 
     
-    pg.display.update()
+    
+    
+    
+    
     
 
     

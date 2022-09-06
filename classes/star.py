@@ -4,16 +4,18 @@ import numpy as np
 import time 
 
 
-#VEL_STAR      = 2
 
 
 
 
-#WHITE = (255,255,255)     # screen color (rgb)     
+
+
 SCREEN_WIDTH  = 500       # screen shape  
 SCREEN_HEIGHT = 650  
 pg.display.set_caption('TicTacToe')                            # title 
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))     # game window (width & height)
+
+
 
 
 
@@ -37,6 +39,8 @@ class Star():
         self.rect_star = self.image_star.get_rect()
         self.rect_star.topleft = (self.x,self.y)          
 
+
+        self.status = 'not blasted'
 
         # ANIMATION
         self.index = 0
@@ -62,6 +66,31 @@ class Star():
         self.index += 1 
         if (self.index == 5): self.index = 0
     
+
+   
+        
+    # NEW DRAW METHOD 
+    def draw_star(self):
+        
+        self.y += self.velocity
+        rect    = self.rect_star
+        rect.topleft = (self.x,self.y) 
+        
+        if self.status == 'blasted':
+            screen.blit(self.image_blast, self.rect_star.topleft) 
+
+        else: 
+            image = self.image_list[self.index]
+            screen.blit(image, rect.topleft)                               
+
+
+    # INIT 
+    def initialize(self):
+        self.x = np.random.randint(0, SCREEN_WIDTH-self.image_star.get_width())      
+        self.y = 0
+        self.velocity = np.random.randint(2,5)
+
+
     # DRAW  
     def draw(self, star_blasted, collision_time):
 
@@ -82,22 +111,14 @@ class Star():
 
     
     # COORDINATES 
-    def coordinates(self):
-        return (self.x,self.y)
+    def y_coordinate(self):
+        return self.y
     
     # DIMENSIONS
     def dimensions(self): 
         return (self.image_star.get_width(), self.image_star.get_height())
 
-    # INIT 
-    def initialize(self):
-
-        # coordinates (random)
-        self.x = np.random.randint(0, SCREEN_WIDTH-self.image_star.get_width())      
-        self.y = 0
-
-        # velocity (random)
-        self.velocity = np.random.randint(2,5)
+    
 
 
     def turn_off(self):

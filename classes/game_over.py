@@ -1,7 +1,7 @@
 
 
 import pygame as pg 
-
+import time as t 
 
 SCREEN_WIDTH  = 500       # screen shape  
 SCREEN_HEIGHT = 650  
@@ -48,30 +48,28 @@ class GameOver():
 
 
 
-    # NO - EXIT GAME 
+    # EXIT-GAME 
     def exit_game(self, pos, mouse_clicked):
         
         # run : true or false 
         if self.rect_no.collidepoint(pos) & (pg.mouse.get_pressed()[0] == 1) & (mouse_clicked == False):    
-            return False  
+            return True  
         else:  
-            return True   
+            return False
 
 
-    # YES - NEW GAME 
+    # NEW GAME 
     def new_game(self, pos, mouse_clicked):
-        
+
         if self.rect_yes.collidepoint(pos) & (pg.mouse.get_pressed()[0] == 1) & (mouse_clicked == False) :
-            print ('YES') 
-            mouse_clicked = True 
-            return mouse_clicked
+            
+            t.sleep(1)
+            return (True)
     
             
             
-
     def draw(self):
         screen.blit(self.image_gameOver, self.rect_gameOver.topleft)
-        #screen.blit(self.image_playAgain, self.rect_playAgain.topleft)
         screen.blit(self.image_yes, self.rect_yes.topleft)
         screen.blit(self.image_no, self.rect_no.topleft)
 
