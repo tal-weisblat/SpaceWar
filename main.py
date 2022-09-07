@@ -4,12 +4,12 @@
 # TODO 
 
 # change ALL signs according to the built-in pygame functionaity (game-over, yes, no etc.)
-# fix the x-coordinate for no button 
 # create functionality for BOTH yes & no buttons 
 
 
 
 # packages  
+from os import sysconf
 import pygame as pygame
 import numpy  as np 
 import time   as t 
@@ -77,11 +77,15 @@ STAR_MAX    = 2            # at most 3 stars on WIN
 GAME_OVER = pygame.USEREVENT + 1
 
 
-# SUBTITLEs
-GAME_OVER_FONT  = pygame.font.SysFont('comicsans', 40)              # game-ove : type & size
-YES_AND_NO_FONT = pygame.font.SysFont('comicsans', 25)              # yes & no : type & size  
+# FONT 
+GAME_OVER_FONT  = pygame.font.SysFont('comicsans', 40)             
+NEW_GAME_FONT   = pygame.font.SysFont('comicsans', 25)
+YES_AND_NO_FONT = pygame.font.SysFont('comicsans', 25)             
 
-gameOver_text   = GAME_OVER_FONT.render('Game over',1, YELLOW)      # render: text, collor  
+# RENDER: text, collor  
+gameOver_text   = GAME_OVER_FONT.render('Game over',1, YELLOW)      
+playAgain_text  = NEW_GAME_FONT.render('Play again ?',1, PINK)
+or_text         = YES_AND_NO_FONT.render('or',1,PINK)
 yes_text        = YES_AND_NO_FONT.render('Yes',1, PINK)
 no_text         = YES_AND_NO_FONT.render('No',1, PINK) 
 
@@ -198,15 +202,23 @@ def main():
             gameOverText_height = gameOver_text.get_height()  
             WIN.blit( gameOver_text, (WIN_WIDTH/2 - gameOverText_width/2 , WIN_HEIGHT/2 - gameOverText_height))
             
+            # play again ?
+            playAgain_width  = playAgain_text.get_width()
+            playAgain_height = playAgain_text.get_height()
+            WIN.blit(playAgain_text, (WIN_WIDTH/2 - playAgain_width/2, WIN_HEIGHT/2 - playAgain_height/2 + 20 ))
+
             # yes 
             yesText_width  = yes_text.get_width()
             yesText_height = yes_text.get_height()
-            WIN.blit( yes_text, (WIN_WIDTH/2 - gameOverText_width/2 + yesText_width/2, WIN_HEIGHT/2 - gameOverText_height + yesText_height + 15 ) )            
+            WIN.blit( yes_text, (WIN_WIDTH/2 - playAgain_width/2, WIN_HEIGHT/2 - yesText_height/2 + 50 ) )            
             
-            # BUG : no : fix the x coordinate  
-            noText_width  = no_text.get_width()
+            # or 
+            orText_width = or_text.get_width()
+            WIN.blit( or_text, (WIN_WIDTH/2 - playAgain_width/2 + yesText_width + 10 , WIN_HEIGHT/2 - yesText_height/2 + 50 ) )            
+            
+            # no
             noText_height = no_text.get_height()
-            WIN.blit( no_text, (WIN_WIDTH/2 - gameOverText_width/2 + noText_width/2 + 100, WIN_HEIGHT/2 - gameOverText_height + noText_height + 15 ) )            
+            WIN.blit( no_text, (WIN_WIDTH/2 - playAgain_width/2 + yesText_width + 10 + orText_width + 10, WIN_HEIGHT/2 - noText_height/2 + 50 ) )            
 
             
             # pos = pygame.mouse.get_pos()                        # mouse position 
