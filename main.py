@@ -2,8 +2,10 @@
 
 
 # TODO 
-# APPLY NEW bullets list throughout the code 
-# ERASE the old bullet approach 
+
+# change ALL signs according to the built-in pygame functionaity (game-over, yes, no etc.)
+# fix the x-coordinate for no button 
+# create functionality for BOTH yes & no buttons 
 
 
 
@@ -11,17 +13,20 @@
 import pygame as pygame
 import numpy  as np 
 import time   as t 
+
+
+pygame.init()
  
 # classes
 from classes.background import Background
 from classes.spaceship  import Spaceship
-from classes.star       import Star 
 from classes.game_over  import GameOver
 from classes.flame      import Flame
  
 # sounds 
 from sounds.functions import blast_sound
-from sounds.functions import bullet_fired_sound
+from sounds.functions import bulletFired_sound
+from sounds.functions import gameOver_sound
 
 
 # initilize objects  
@@ -29,7 +34,6 @@ background = Background()
 spaceship  = Spaceship(280,490)
 gameOver   = GameOver()
 flame      = Flame()
-star       = Star()
 
 
 # MUSIC (background)
@@ -37,11 +41,17 @@ pygame.mixer.init()
 pygame.mixer.music.load('sounds/files/melody.mp3')
 pygame.mixer.music.play()
 
-# WINDOW
-SCREEN_WIDTH  = 500                                                # WINDOW shape  
-SCREEN_HEIGHT = 650  
-WINDOW = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))     # game window (width & height)
+# WIN
+WIN_WIDTH  = 500                                                # WIN shape  
+WIN_HEIGHT = 650  
+WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     # game window (width & height)
 pygame.display.set_caption('SpaceWar')                             # title 
+
+
+# COLORs
+RED     = (255,0,0)      # bullet
+YELLOW  = (255,255,0)    # stars & game-over 
+PINK    = (255,192,203)  # yes & no
 
 
 # BULLETs
@@ -49,28 +59,31 @@ bullet_list   = []    # the one that's going to contain all bullets
 BULLET_VEL    = 15    # bullet velociry 
 BULLET_WIDTH  = 5     # bullet width 
 BULLET_HEIGHT = 10    # bullet heaight 
-BULLET_MAX    = 2     # magazine size (at most 3 bullets on WINDOW)
-RED = (255,0,0)       # bullet color 
+BULLET_MAX    = 2     # magazine size (at most 3 bullets on WIN)
+
 
 
 
 # STARs
-star_list   = []           # contain all stars present on WINDOW 
+star_list   = []           # contain all stars present on WIN 
 STAR_VEL    = 3            # CHNAGE : to something random 
 STAR_WIDTH  = 40           # star dimensions 
 STAR_HEIGHT = 50   
-STAR_MAX    = 2            # at most 3 stars on WINDOW 
-YELLOW      = (255,255,0)  # stars color 
-
-
-
-
+STAR_MAX    = 2            # at most 3 stars on WIN 
 
 
 
 # EVENTS 
-STAR_HIT  = pygame.USEREVENT + 1 
-STAR_INIT = pygame.USEREVENT + 2  
+GAME_OVER = pygame.USEREVENT + 1
+
+
+# SUBTITLEs
+GAME_OVER_FONT  = pygame.font.SysFont('comicsans', 40)              # game-ove : type & size
+YES_AND_NO_FONT = pygame.font.SysFont('comicsans', 25)              # yes & no : type & size  
+
+gameOver_text   = GAME_OVER_FONT.render('Game over',1, YELLOW)      # render: text, collor  
+yes_text        = YES_AND_NO_FONT.render('Yes',1, PINK)
+no_text         = YES_AND_NO_FONT.render('No',1, PINK) 
 
 
 
@@ -80,16 +93,16 @@ STAR_INIT = pygame.USEREVENT + 2
 # DRAW BULLETS 
 def draw_bullets(bullet_list):
     for bullet in bullet_list:
-        pygame.draw.rect(WINDOW, RED, bullet)
+        pygame.draw.rect(WIN, RED, bullet)
 
 
 # HANDLE BULLETS 
 def handle_bullets(bullet_list, star_list): 
     
     for bullet in bullet_list: 
-        # movement on WINDOW   
+        # movement on WIN   
         bullet.y -= BULLET_VEL                  
-        # reached top WINDOW
+        # reached top WIN
         if bullet.y < 0: bullet_list.remove(bullet)    
 
 
@@ -97,14 +110,14 @@ def handle_bullets(bullet_list, star_list):
 def draw_stars(star_list):    
     
     for star in star_list:
-        pygame.draw.rect(WINDOW, YELLOW, star)
+        pygame.draw.rect(WIN, YELLOW, star)
 
 
 # ADD NEW STARs
 def add_new_stars(star_list):
     
     if len(star_list) < STAR_MAX :
-        x = np.random.randint(0, SCREEN_WIDTH - STAR_WIDTH) 
+        x = np.random.randint(0, WIN_WIDTH - STAR_WIDTH) 
         star = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)       
         star_list.append(star) 
 
@@ -116,15 +129,15 @@ def handle_stars_and_bullets(bullet_list, star_list):
 
         star.y += STAR_VEL
 
-        # star reached buttom 
-        if star.y > SCREEN_HEIGHT: star_list.remove(star)
-            
+        # star reached buttom - game over 
+        if star.y > WIN_HEIGHT:             
+            pygame.event.post(pygame.event.Event(GAME_OVER))         # posting GAME_OVER event  
+
         # star & bullet collided 
         for bullet in bullet_list: 
             if star.colliderect(bullet): 
                 
                 blast_sound()
-                pygame.event.post(pygame.event.Event(STAR_HIT))         # posting event 
                 bullet_list.remove(bullet)                              # remove bullet (from list) 
                 star_list.remove(star)                                  # remove star   (from list)
             
@@ -132,18 +145,13 @@ def handle_stars_and_bullets(bullet_list, star_list):
 
             
 
-        
-
-        
-
 
 def main():
 
+    star_list   = []
+    game_over = False 
     mouse_clicked = False 
-    #star.initialize()
-    stage = 'non'    
-    collision_time = t.time() - 1 
-    clock = pygame.time.Clock()         # conroll number of looping per second
+    clock = pygame.time.Clock()         
     run = True                          
 
     while run:
@@ -151,9 +159,13 @@ def main():
         clock.tick(60) 
         for event in pygame.event.get():    
             
-            # STAR-HIT 
-            if event.type == STAR_HIT: print ('star HIT')
             
+            # GAME-OVER 
+            if event.type == GAME_OVER : 
+                gameOver_sound()
+                game_over = True
+                
+                
             # QUIT-GAME 
             if event.type == pygame.QUIT: run = False
                 
@@ -163,15 +175,48 @@ def main():
                 if event.key == pygame.K_SPACE:
                     if (len(bullet_list) < BULLET_MAX):
 
-                        bullet_fired_sound()
+                        bulletFired_sound()
                         x,y = spaceship.coordinates()
                         z   = spaceship.width()
                         bullet = pygame.Rect(x + z/2 - BULLET_WIDTH/2, y, BULLET_WIDTH, BULLET_HEIGHT)  
-                        bullet_list.append(bullet)                               # add bullet to list 
+                        bullet_list.append(bullet)                         
 
 
         # FIRST LAYER 
         background.draw()
+
+        
+        
+        
+
+
+        # GAME-OVER 
+        if game_over: 
+
+            # game-over 
+            gameOverText_width  = gameOver_text.get_width()
+            gameOverText_height = gameOver_text.get_height()  
+            WIN.blit( gameOver_text, (WIN_WIDTH/2 - gameOverText_width/2 , WIN_HEIGHT/2 - gameOverText_height))
+            
+            # yes 
+            yesText_width  = yes_text.get_width()
+            yesText_height = yes_text.get_height()
+            WIN.blit( yes_text, (WIN_WIDTH/2 - gameOverText_width/2 + yesText_width/2, WIN_HEIGHT/2 - gameOverText_height + yesText_height + 15 ) )            
+            
+            # BUG : no : fix the x coordinate  
+            noText_width  = no_text.get_width()
+            noText_height = no_text.get_height()
+            WIN.blit( no_text, (WIN_WIDTH/2 - gameOverText_width/2 + noText_width/2 + 100, WIN_HEIGHT/2 - gameOverText_height + noText_height + 15 ) )            
+
+            
+            # pos = pygame.mouse.get_pos()                        # mouse position 
+            # if gameOver.new_game(pos,mouse_clicked)  : main()   # NEW-GAME 
+            # if gameOver.exit_game(pos,mouse_clicked) : break    # EXIT-GAME 
+            # if (pygame.mouse.get_pressed()[0] == 0): mouse_clicked = False
+            # gameOver.draw()  
+            pygame.display.update()
+            continue   
+
 
         # STARS
         add_new_stars(star_list)
@@ -182,9 +227,8 @@ def main():
         handle_bullets(bullet_list, star_list)
         draw_bullets(bullet_list)
         
-
         # SPACESHIP
-        spaceship.movement()               # moving spaceship on WINDOW 
+        spaceship.movement()               # moving spaceship on WIN 
         spaceship.draw()                   # draw spaceship
 
         # FLAME 
@@ -195,36 +239,11 @@ def main():
         flame.update_img()
         flame.draw()
 
-
         
         pygame.display.update()
 
 
-
-
-        # star_y_coordinate = star.y_coordinate()
-        # if (t.time() > collision_time + 0.7) and stage == '1': 
-        #     stage = '2'
-        #     star.status = 'not blasted'
-        
-        # elif (t.time() > collision_time + 0.7) and stage == '2':
-        #     stage = 'non'
-        #     star.initialize()
-
-        # elif (star_y_coordinate > SCREEN_HEIGHT) and (star.status == 'not blasted'):
-            
-        #     pos = pygame.mouse.get_pos()                        # mouse position 
-        #     if gameOver.new_game(pos,mouse_clicked)  : main()   # NEW-GAME 
-        #     if gameOver.exit_game(pos,mouse_clicked) : break    # EXIT-GAME 
-        #     if (pygame.mouse.get_pressed()[0] == 0): mouse_clicked = False
-        #     gameOver.draw()    
-            
-
-
-        
-            
-
-            
+    
             
             
 

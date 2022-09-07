@@ -1,7 +1,7 @@
 
 
 import pygame as pg
-from sounds.functions import bullet_fired_sound
+from sounds.functions import bulletFired_sound
 from curses import KEY_DOWN
 
 
