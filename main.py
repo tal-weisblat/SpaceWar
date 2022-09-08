@@ -3,8 +3,8 @@
 
 # TODO 
 
-# change ALL signs according to the built-in pygame functionaity (game-over, yes, no etc.)
-# create functionality for BOTH yes & no buttons 
+
+
 
 
 
@@ -42,10 +42,10 @@ pygame.mixer.music.load('sounds/files/melody.mp3')
 pygame.mixer.music.play()
 
 # WIN
-WIN_WIDTH  = 500                                                # WIN shape  
+WIN_WIDTH  = 500                                                
 WIN_HEIGHT = 650  
-WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     # game window (width & height)
-pygame.display.set_caption('SpaceWar')                             # title 
+WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
+pygame.display.set_caption('SpaceWar')                    
 
 
 # COLORs
@@ -75,7 +75,7 @@ STAR_MAX    = 2            # at most 3 stars on WIN
 
 # EVENTS 
 GAME_OVER = pygame.USEREVENT + 1
-
+EXIT_GAME = pygame.USEREVENT + 2 
 
 # FONT 
 GAME_OVER_FONT  = pygame.font.SysFont('comicsans', 40)             
@@ -147,7 +147,42 @@ def handle_stars_and_bullets(bullet_list, star_list):
             
 
 
-            
+def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, pos, mouse_clicked):
+    gameOverText_width  = gameOver_text.get_width()
+    gameOverText_height = gameOver_text.get_height()  
+    playAgain_width  = playAgain_text.get_width()
+    playAgain_height = playAgain_text.get_height()
+    yesText_width  = yes_text.get_width()
+    yesText_height = yes_text.get_height()
+    orText_width = or_text.get_width()
+    noText_height = no_text.get_height()
+
+
+    # DRAW 
+    WIN.blit( gameOver_text, (WIN_WIDTH/2 - gameOverText_width/2 , WIN_HEIGHT/2 - gameOverText_height))
+    WIN.blit(playAgain_text, (WIN_WIDTH/2 - playAgain_width/2, WIN_HEIGHT/2 - playAgain_height/2 + 20))
+    WIN.blit( yes_text,      (WIN_WIDTH/2 - playAgain_width/2, WIN_HEIGHT/2 - yesText_height/2 + 50))            
+    WIN.blit( or_text, (WIN_WIDTH/2 - playAgain_width/2 + yesText_width + 10 , WIN_HEIGHT/2 - yesText_height/2 + 50 ) )   
+    WIN.blit( no_text, (WIN_WIDTH/2 - playAgain_width/2 + yesText_width + 10 + orText_width + 10, WIN_HEIGHT/2 - noText_height/2 + 50))         
+
+    # RECT
+    yes_rect = yes_text.get_rect()
+    yes_rect.topleft = (WIN_WIDTH/2 - playAgain_width/2, WIN_HEIGHT/2 - yesText_height/2 + 50 ) 
+    no_rect = no_text.get_rect()
+    no_rect.topleft = (WIN_WIDTH/2 - playAgain_width/2 + yesText_width + 10 + orText_width + 10, WIN_HEIGHT/2 - noText_height/2 + 50 )
+
+    # mouse cursor position 
+    pos = pygame.mouse.get_pos()
+    
+    # taking action 
+    if yes_rect.collidepoint(pos) & (pygame.mouse.get_pressed()[0] == 1) & (mouse_clicked == False) :
+        main()
+    if no_rect.collidepoint(pos) & (pygame.mouse.get_pressed()[0] == 1) & (mouse_clicked == False) :
+        pygame.event.post(pygame.event.Event(EXIT_GAME)) 
+        print ('need to break')    
+    
+    
+
 
 
 def main():
@@ -169,10 +204,11 @@ def main():
                 gameOver_sound()
                 game_over = True
                 
-                
             # QUIT-GAME 
             if event.type == pygame.QUIT: run = False
                 
+            # EXIT_GAME 
+            if event.type == EXIT_GAME: run = False 
 
             # BULLET-FIRED 
             if (event.type == pygame.KEYUP):
@@ -186,49 +222,18 @@ def main():
                         bullet_list.append(bullet)                         
 
 
-        # FIRST LAYER 
-        background.draw()
-
-        
-        
-        
-
-
+         
         # GAME-OVER 
         if game_over: 
-
-            # game-over 
-            gameOverText_width  = gameOver_text.get_width()
-            gameOverText_height = gameOver_text.get_height()  
-            WIN.blit( gameOver_text, (WIN_WIDTH/2 - gameOverText_width/2 , WIN_HEIGHT/2 - gameOverText_height))
-            
-            # play again ?
-            playAgain_width  = playAgain_text.get_width()
-            playAgain_height = playAgain_text.get_height()
-            WIN.blit(playAgain_text, (WIN_WIDTH/2 - playAgain_width/2, WIN_HEIGHT/2 - playAgain_height/2 + 20 ))
-
-            # yes 
-            yesText_width  = yes_text.get_width()
-            yesText_height = yes_text.get_height()
-            WIN.blit( yes_text, (WIN_WIDTH/2 - playAgain_width/2, WIN_HEIGHT/2 - yesText_height/2 + 50 ) )            
-            
-            # or 
-            orText_width = or_text.get_width()
-            WIN.blit( or_text, (WIN_WIDTH/2 - playAgain_width/2 + yesText_width + 10 , WIN_HEIGHT/2 - yesText_height/2 + 50 ) )            
-            
-            # no
-            noText_height = no_text.get_height()
-            WIN.blit( no_text, (WIN_WIDTH/2 - playAgain_width/2 + yesText_width + 10 + orText_width + 10, WIN_HEIGHT/2 - noText_height/2 + 50 ) )            
-
-            
-            # pos = pygame.mouse.get_pos()                        # mouse position 
-            # if gameOver.new_game(pos,mouse_clicked)  : main()   # NEW-GAME 
-            # if gameOver.exit_game(pos,mouse_clicked) : break    # EXIT-GAME 
-            # if (pygame.mouse.get_pressed()[0] == 0): mouse_clicked = False
-            # gameOver.draw()  
+            background.draw()
+            pos = pygame.mouse.get_pos()
+            finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, pos, mouse_clicked)
             pygame.display.update()
             continue   
+            
 
+        # BACKGROUND
+        background.draw()
 
         # STARS
         add_new_stars(star_list)
@@ -240,8 +245,8 @@ def main():
         draw_bullets(bullet_list)
         
         # SPACESHIP
-        spaceship.movement()               # moving spaceship on WIN 
-        spaceship.draw()                   # draw spaceship
+        spaceship.movement()         
+        spaceship.draw()             
 
         # FLAME 
         x,y = spaceship.coordinates()
