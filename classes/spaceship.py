@@ -12,12 +12,10 @@ SCREEN_WIDTH  = 500       # screen shape
 SCREEN_HEIGHT = 650  
 pg.display.set_caption('TicTacToe')                            # title 
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))     # game window (width & height)
-#screen.fill(WHITE)
 
 
-# velocities 
-VEL_SPACESHIP = 3
-VEL_BULLET    = 5
+VEL_SPACESHIP = 4
+
 
 
 

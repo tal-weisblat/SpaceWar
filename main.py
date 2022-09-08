@@ -2,8 +2,10 @@
 
 
 # TODO 
-
-
+# add different velocities for different stars 
+# add different shapes for stars (rectangles, circles, elipses etc.)
+# complete Misses counter at the left-top screen
+# 
 
 
 
@@ -12,7 +14,8 @@
 from os import sysconf
 import pygame as pygame
 import numpy  as np 
-import time   as t 
+import random
+
 
 
 pygame.init()
@@ -50,27 +53,32 @@ pygame.display.set_caption('SpaceWar')
 
 # COLORs
 RED     = (255,0,0)      # bullet
-YELLOW  = (255,255,0)    # stars & game-over 
+YELLOW  = (255,255,0)    # gameover title 
 PINK    = (255,192,203)  # yes & no
+WHITE = (255,255,255)
+COLOR_1 = (0,51,25)
+COLOR_2 = (128,255,0)
+COLOR_3 = (204,102,0)
+COLOR_4 = (255,0,127)
+STAR_COLOR_LIST = [PINK,YELLOW,COLOR_2,COLOR_3,COLOR_4]
+
+
 
 
 # BULLETs
 bullet_list   = []    # the one that's going to contain all bullets
-BULLET_VEL    = 15    # bullet velociry 
-BULLET_WIDTH  = 5     # bullet width 
-BULLET_HEIGHT = 10    # bullet heaight 
+BULLET_VEL    = 16    # bullet velociry 
+BULLET_WIDTH  = 4     # bullet width 
+BULLET_HEIGHT = 9    # bullet heaight 
 BULLET_MAX    = 2     # magazine size (at most 3 bullets on WIN)
-
-
 
 
 # STARs
 star_list   = []           # contain all stars present on WIN 
-STAR_VEL    = 3            # CHNAGE : to something random 
-STAR_WIDTH  = 40           # star dimensions 
-STAR_HEIGHT = 50   
-STAR_MAX    = 2            # at most 3 stars on WIN 
-
+STAR_VEL    = 2            # CHNAGE : to something random 
+STAR_WIDTH  = 30           # star dimensions 
+STAR_HEIGHT = 30   
+STAR_MAX    = 4            # at most 3 stars on WIN 
 
 
 # EVENTS 
@@ -78,17 +86,18 @@ GAME_OVER = pygame.USEREVENT + 1
 EXIT_GAME = pygame.USEREVENT + 2 
 
 # FONT 
-GAME_OVER_FONT  = pygame.font.SysFont('comicsans', 40)             
-NEW_GAME_FONT   = pygame.font.SysFont('comicsans', 25)
-YES_AND_NO_FONT = pygame.font.SysFont('comicsans', 25)             
+GAME_OVER_FONT   = pygame.font.SysFont('comicsans', 40)             
+NEW_GAME_FONT    = pygame.font.SysFont('comicsans', 25)
+YES_AND_NO_FONT  = pygame.font.SysFont('comicsans', 25) 
+MISSES_FONT = pygame.font.SysFont('comicsans', 20)
 
 # RENDER: text, collor  
-gameOver_text   = GAME_OVER_FONT.render('Game over',1, YELLOW)      
-playAgain_text  = NEW_GAME_FONT.render('Play again ?',1, PINK)
-or_text         = YES_AND_NO_FONT.render('or',1,PINK)
-yes_text        = YES_AND_NO_FONT.render('Yes',1, PINK)
-no_text         = YES_AND_NO_FONT.render('No',1, PINK) 
-
+gameOver_text    = GAME_OVER_FONT.render('Game over',1, YELLOW)      
+playAgain_text   = NEW_GAME_FONT.render('Play again ?',1, PINK)
+or_text          = YES_AND_NO_FONT.render('or',1,PINK)
+yes_text         = YES_AND_NO_FONT.render('Yes',1, PINK)
+no_text          = YES_AND_NO_FONT.render('No',1, PINK) 
+misses_text      = MISSES_FONT.render('Misses :',1 , PINK)
 
 
 
@@ -101,7 +110,7 @@ def draw_bullets(bullet_list):
 
 
 # HANDLE BULLETS 
-def handle_bullets(bullet_list, star_list): 
+def handle_bullets(bullet_list): 
     
     for bullet in bullet_list: 
         # movement on WIN   
@@ -111,29 +120,32 @@ def handle_bullets(bullet_list, star_list):
 
 
 # DRAW STARS          
-def draw_stars(star_list):    
+def draw_stars(starColor_list):    
     
-    for star in star_list:
-        pygame.draw.rect(WIN, YELLOW, star)
+    for starColor in starColor_list:
+        star  = starColor[0]
+        color = starColor[1]
+        pygame.draw.rect(WIN, color, star)
 
 
 # ADD NEW STARs
 def add_new_stars(star_list):
-    
     if len(star_list) < STAR_MAX :
         x = np.random.randint(0, WIN_WIDTH - STAR_WIDTH) 
-        star = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)       
-        star_list.append(star) 
+        star = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)     
+        color = random.choice(STAR_COLOR_LIST)              # random color 
+        star_list.append((star,color)) 
 
 
 # COLLISION 
-def handle_stars_and_bullets(bullet_list, star_list): 
+def handle_stars_and_bullets(bullet_list, starColor_list): 
     
-    for star in star_list:
-
+    for starColor in starColor_list:
+        
+        star = starColor[0]
         star.y += STAR_VEL
 
-        # star reached buttom - game over 
+        # FIX : 
         if star.y > WIN_HEIGHT:             
             pygame.event.post(pygame.event.Event(GAME_OVER))         # posting GAME_OVER event  
 
@@ -143,7 +155,7 @@ def handle_stars_and_bullets(bullet_list, star_list):
                 
                 blast_sound()
                 bullet_list.remove(bullet)                              # remove bullet (from list) 
-                star_list.remove(star)                                  # remove star   (from list)
+                starColor_list.remove(starColor)                                  # remove star   (from list)
             
 
 
@@ -187,6 +199,7 @@ def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, 
 
 def main():
 
+    #stars_missed = 0    
     star_list   = []
     game_over = False 
     mouse_clicked = False 
@@ -201,8 +214,10 @@ def main():
             
             # GAME-OVER 
             if event.type == GAME_OVER : 
-                gameOver_sound()
+                gameOver_sound()   
                 game_over = True
+                #stars_missed +=1       # STAR-MISSED  
+                #print(stars_missed) 
                 
             # QUIT-GAME 
             if event.type == pygame.QUIT: run = False
@@ -235,13 +250,17 @@ def main():
         # BACKGROUND
         background.draw()
 
+        # MISSES
+        WIN.blit(misses_text, (0,0))
+
+
         # STARS
         add_new_stars(star_list)
         handle_stars_and_bullets(bullet_list, star_list)
         draw_stars(star_list)      
 
         # BULLETS
-        handle_bullets(bullet_list, star_list)
+        handle_bullets(bullet_list)
         draw_bullets(bullet_list)
         
         # SPACESHIP
