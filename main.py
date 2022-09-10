@@ -62,7 +62,7 @@ spaceship  = Spaceship(280,490)
 gameOver   = GameOver()
 flame      = Flame()
 star       = Star()
-bullet     = Bullet(0,0,0)
+
 =======
 # COLORs
 RED     = (255,0,0)      # bullet
