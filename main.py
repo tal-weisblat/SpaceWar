@@ -2,10 +2,14 @@
 
 
 # TODO 
-# add different velocities for different stars 
-# add different shapes for stars (rectangles, circles, elipses etc.)
-# complete Misses counter at the left-top screen
-# 
+# add : different shapes for stars (rectangles, circles, elipses etc.)
+
+ 
+# use pymunk library for physics simulations ? 
+# - you can add more features to your game
+# - you can add 'dynamic stars' change their position on screen while bumping up with other static-objects 
+# - 
+
 
 
 
@@ -56,11 +60,10 @@ RED     = (255,0,0)      # bullet
 YELLOW  = (255,255,0)    # gameover title 
 PINK    = (255,192,203)  # yes & no
 WHITE = (255,255,255)
-COLOR_1 = (0,51,25)
-COLOR_2 = (128,255,0)
-COLOR_3 = (204,102,0)
-COLOR_4 = (255,0,127)
-STAR_COLOR_LIST = [PINK,YELLOW,COLOR_2,COLOR_3,COLOR_4]
+COLOR_1 = (128,255,0)
+COLOR_2 = (204,102,0)
+COLOR_3 = (255,0,127)
+STAR_COLOR_LIST = [PINK,YELLOW,COLOR_1,COLOR_2,COLOR_3]
 
 
 
@@ -78,18 +81,22 @@ star_list   = []           # contain all stars present on WIN
 STAR_VEL    = 2            # CHNAGE : to something random 
 STAR_WIDTH  = 30           # star dimensions 
 STAR_HEIGHT = 30   
-STAR_MAX    = 4            # at most 3 stars on WIN 
+LIST_MAX_STARS = 4            # at most 3 stars on WIN 
+MAX_STAR_MISED = 5
+
 
 
 # EVENTS 
 GAME_OVER = pygame.USEREVENT + 1
 EXIT_GAME = pygame.USEREVENT + 2 
+STAR_HIT  = pygame.USEREVENT + 3  
+MISSED_STAR = pygame.USEREVENT + 4 
 
 # FONT 
 GAME_OVER_FONT   = pygame.font.SysFont('comicsans', 40)             
 NEW_GAME_FONT    = pygame.font.SysFont('comicsans', 25)
 YES_AND_NO_FONT  = pygame.font.SysFont('comicsans', 25) 
-MISSES_FONT = pygame.font.SysFont('comicsans', 20)
+MISSED_FONT = pygame.font.SysFont('comicsans', 20)
 
 # RENDER: text, collor  
 gameOver_text    = GAME_OVER_FONT.render('Game over',1, YELLOW)      
@@ -97,7 +104,15 @@ playAgain_text   = NEW_GAME_FONT.render('Play again ?',1, PINK)
 or_text          = YES_AND_NO_FONT.render('or',1,PINK)
 yes_text         = YES_AND_NO_FONT.render('Yes',1, PINK)
 no_text          = YES_AND_NO_FONT.render('No',1, PINK) 
-misses_text      = MISSES_FONT.render('Misses :',1 , PINK)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -120,42 +135,52 @@ def handle_bullets(bullet_list):
 
 
 # DRAW STARS          
-def draw_stars(starColor_list):    
+def draw_stars(star_list):    
     
-    for starColor in starColor_list:
-        star  = starColor[0]
-        color = starColor[1]
+    for starSettings in star_list:
+        star  = starSettings[0]
+        color = starSettings[1]
         pygame.draw.rect(WIN, color, star)
 
 
 # ADD NEW STARs
 def add_new_stars(star_list):
-    if len(star_list) < STAR_MAX :
-        x = np.random.randint(0, WIN_WIDTH - STAR_WIDTH) 
-        star = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)     
-        color = random.choice(STAR_COLOR_LIST)              # random color 
-        star_list.append((star,color)) 
+    if len(star_list) < LIST_MAX_STARS :
+         
+        x = np.random.randint(0, WIN_WIDTH - STAR_WIDTH)      
+        star  = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)   # shape $ position    : add more shapes ?
+        color = random.choice(STAR_COLOR_LIST)               # color 
+        velocity = random.choice([1.5, 2, 2.5, 3])           # velocity : uniquely determined for each star 
+        star_list.append((star,color,velocity)) 
 
 
 # COLLISION 
-def handle_stars_and_bullets(bullet_list, starColor_list): 
+def handle_stars_and_bullets(bullet_list, star_list): 
     
-    for starColor in starColor_list:
+    for starSettings in star_list:
         
-        star = starColor[0]
-        star.y += STAR_VEL
+        star     = starSettings[0]    # star itself 
+        velocity = starSettings[2]    # star velocity 
+        star.y += velocity
 
         # FIX : 
         if star.y > WIN_HEIGHT:             
-            pygame.event.post(pygame.event.Event(GAME_OVER))         # posting GAME_OVER event  
+            
+            pygame.event.post(pygame.event.Event(MISSED_STAR))   # posing : for counting missed-stars 
+            star_list.remove(starSettings)                     # remove star from list 
 
-        # star & bullet collided 
+
+
+            
+
+        # COLLISION : stars & bullets 
         for bullet in bullet_list: 
             if star.colliderect(bullet): 
                 
                 blast_sound()
-                bullet_list.remove(bullet)                              # remove bullet (from list) 
-                starColor_list.remove(starColor)                                  # remove star   (from list)
+                bullet_list.remove(bullet)                         # remove star  
+                star_list.remove(starSettings)                     # remove bullet       
+                pygame.event.post(pygame.event.Event(STAR_HIT))    # posing : for star-hits counting purposes 
             
 
 
@@ -197,10 +222,19 @@ def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, 
 
 
 
+
+
+
+
+
 def main():
 
-    #stars_missed = 0    
-    star_list   = []
+    
+    hits_number   = 0
+    missed_number = 0    
+    
+
+    starsSetting_list   = []
     game_over = False 
     mouse_clicked = False 
     clock = pygame.time.Clock()         
@@ -211,21 +245,29 @@ def main():
         clock.tick(60) 
         for event in pygame.event.get():    
             
-            
-            # GAME-OVER 
-            if event.type == GAME_OVER : 
-                gameOver_sound()   
-                game_over = True
-                #stars_missed +=1       # STAR-MISSED  
-                #print(stars_missed) 
-                
-            # QUIT-GAME 
+            # hit star 
+            if event.type == STAR_HIT:
+                hits_number += 1
+                hits_number_text = MISSED_FONT.render('Hits : ' + str(hits_number), 1, PINK)
+
+            # missed star 
+            if event.type == MISSED_STAR:
+                missed_number += 1 
+                missed_number_text = MISSED_FONT.render('Missed: ' + str(missed_number), 1, PINK)
+
+                # game over 
+                if missed_number == MAX_STAR_MISED: 
+                    gameOver_sound()
+                    game_over = True
+
+
+            # quit game 
             if event.type == pygame.QUIT: run = False
                 
-            # EXIT_GAME 
+            # exit game 
             if event.type == EXIT_GAME: run = False 
 
-            # BULLET-FIRED 
+            # bullet fired 
             if (event.type == pygame.KEYUP):
                 if event.key == pygame.K_SPACE:
                     if (len(bullet_list) < BULLET_MAX):
@@ -236,13 +278,15 @@ def main():
                         bullet = pygame.Rect(x + z/2 - BULLET_WIDTH/2, y, BULLET_WIDTH, BULLET_HEIGHT)  
                         bullet_list.append(bullet)                         
 
-
+        
          
         # GAME-OVER 
         if game_over: 
             background.draw()
             pos = pygame.mouse.get_pos()
             finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, pos, mouse_clicked)
+            WIN.blit(hits_number_text, (0,0))
+            WIN.blit(missed_number_text, (0,25))
             pygame.display.update()
             continue   
             
@@ -250,14 +294,18 @@ def main():
         # BACKGROUND
         background.draw()
 
-        # MISSES
-        WIN.blit(misses_text, (0,0))
+        # HITS-NUMBER  
+        hits_number_text = MISSED_FONT.render('Hits: ' + str(hits_number), 1,  PINK)
+        WIN.blit(hits_number_text, (0,0))    
 
+        # MISSED-NUMBER
+        missed_number_text = MISSED_FONT.render('Misses: ' + str(missed_number), 1, PINK)
+        WIN.blit(missed_number_text, (0,25))
 
         # STARS
-        add_new_stars(star_list)
-        handle_stars_and_bullets(bullet_list, star_list)
-        draw_stars(star_list)      
+        add_new_stars(starsSetting_list)
+        handle_stars_and_bullets(bullet_list, starsSetting_list)
+        draw_stars(starsSetting_list)      
 
         # BULLETS
         handle_bullets(bullet_list)
