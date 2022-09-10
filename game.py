@@ -1,6 +1,3 @@
-
-
-
 # TODO 
 # add : different shapes for stars (rectangles, circles, elipses etc.)
 # increase stars falling over time 
@@ -9,43 +6,37 @@
 # game over when star hit spaceship 
 # set boundaries for spaceship movements 
 # add : special weapons over time () 
+# sound when star reach the bottom of the screen 
+# simplify sound-functions acording to tutorial 
 
- 
 # use pymunk library for physics simulations ? 
 # - you can add more features to your game
 # - you can add 'dynamic stars' change their position on screen while bumping up with other static-objects 
-# - 
+
+
 
 
 # packages  
-from os import sysconf
 import pygame as pygame
 import numpy  as np 
 import random
 
 
 # classes
-from classes.background import Background
-from classes.spaceship  import Spaceship
-from classes.game_over  import GameOver
-from classes.flame      import Flame
- 
-# sounds 
-from sounds.functions import blast_sound
-from sounds.functions import bulletFired_sound
-from sounds.functions import gameOver_sound
+from classes import Background
+from classes import Spaceship
+from classes import Flame
 
 
-# initilize objects  
+# objects  
 background = Background()
 spaceship  = Spaceship(280,490)
-gameOver   = GameOver()
 flame      = Flame()
 
 
 # MUSIC (background)
 pygame.mixer.init()
-pygame.mixer.music.load('sounds/files/melody.mp3')
+pygame.mixer.music.load('files/sounds/melody.mp3')
 pygame.mixer.music.play()
 
 # WIN
@@ -55,24 +46,16 @@ WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))
 pygame.display.set_caption('SpaceWar')                    
 pygame.init()
 
-# initilize all objects  
-background = Background()
-spaceship  = Spaceship(280,490)
-gameOver   = GameOver()
-flame      = Flame()
-
-
 
 # COLORs
 RED     = (255,0,0)      # bullet
 YELLOW  = (255,255,0)    # gameover title 
 PINK    = (255,192,203)  # yes & no
-WHITE = (255,255,255)
+WHITE   = (255,255,255)
 COLOR_1 = (128,255,0)
 COLOR_2 = (204,102,0)
 COLOR_3 = (255,0,127)
 STAR_COLOR_LIST = [PINK,YELLOW,COLOR_1,COLOR_2,COLOR_3]
-
 
 
 # BULLETs
@@ -90,7 +73,6 @@ STAR_WIDTH  = 30           # star dimensions
 STAR_HEIGHT = 30   
 LIST_MAX_STARS = 4         # at most 3 stars on WIN 
 MAX_STAR_MISED = 3
-
 
 
 # EVENTS 
@@ -115,6 +97,21 @@ no_text          = YES_AND_NO_FONT.render('No',1, PINK)
 
 
 
+# SOUNDS 
+def bulletFired_sound():
+    pygame.mixer.init()
+    sound = pygame.mixer.Sound('files/sounds/test_sound.mp3')  
+    sound.play()
+
+def blast_sound():
+    pygame.mixer.init()
+    sound = pygame.mixer.Sound('files/sounds/blast.wav')  
+    sound.play()
+
+def gameOver_sound():
+    pygame.mixer.init()
+    sound = pygame.mixer.Sound('files/sounds/game_over.wav')  
+    sound.play()
 
 
 # DRAW BULLETS 
@@ -152,17 +149,14 @@ def add_new_stars(star_list):
 def handle_stars_and_bullets(bullet_list, star_list): 
     
     for starSettings in star_list:
-        
         star     = starSettings[0]    # star itself 
         velocity = starSettings[2]    # star velocity 
         star.y += velocity
         
-
         # star reached bottom
         if star.y > WIN_HEIGHT:             
             pygame.event.post(pygame.event.Event(MISSED_STAR))  # posing : for counting missed-stars 
             star_list.remove(starSettings)                      # remove star from list 
-
 
         # COLLISION : stars & bullets 
         for bullet in bullet_list: 
@@ -173,7 +167,6 @@ def handle_stars_and_bullets(bullet_list, star_list):
                 pygame.event.post(pygame.event.Event(STAR_HIT))    # posing : for star-hits counting purposes 
             
 
-
 def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, pos, mouse_clicked):
     gameOverText_width  = gameOver_text.get_width()
     gameOverText_height = gameOver_text.get_height()  
@@ -183,7 +176,6 @@ def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, 
     yesText_height = yes_text.get_height()
     orText_width = or_text.get_width()
     noText_height = no_text.get_height()
-
 
     # DRAW 
     WIN.blit( gameOver_text, (WIN_WIDTH/2 - gameOverText_width/2 , WIN_HEIGHT/2 - gameOverText_height))
@@ -206,19 +198,16 @@ def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, 
         main()
     if no_rect.collidepoint(pos) & (pygame.mouse.get_pressed()[0] == 1) & (mouse_clicked == False) :
         pygame.event.post(pygame.event.Event(EXIT_GAME)) 
-        print ('need to break')    
+      
     
     
-
-
-
 
 
 def main():
 
     hits_number   = 0
     missed_number = 0    
-    starsSetting_list   = []
+    starsSetting_list = []
     game_over = False 
     mouse_clicked = False 
     clock = pygame.time.Clock()         
@@ -273,7 +262,6 @@ def main():
             pygame.display.update()
             continue   
             
-
         # BACKGROUND
         background.draw()
 
@@ -310,8 +298,6 @@ def main():
 
 
     
-        
-
 if __name__ == '__main__':
     main()
 
