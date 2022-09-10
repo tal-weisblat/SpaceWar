@@ -14,7 +14,7 @@ pg.display.set_caption('TicTacToe')                            # title
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))     # game window (width & height)
 
 
-VEL_SPACESHIP = 4
+VEL_SPACESHIP = 5
 
 
 
@@ -27,8 +27,8 @@ class Spaceship():
     def __init__ (self, x, y):
 
         # SETTINGS  
-        image_spaceship = 'images/spaceship.png'
-        scale_spaceship  = 0.09
+        image_spaceship = 'images/alien_spaceship.png'
+        scale_spaceship  = 0.06
 
         # image
         self.image = pg.image.load(image_spaceship).convert_alpha()

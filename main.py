@@ -3,6 +3,12 @@
 
 # TODO 
 # add : different shapes for stars (rectangles, circles, elipses etc.)
+# increase stars falling over time 
+# upgrade bullets over time 
+# change the background to something more suitable 
+# game over when star hit spaceship 
+# set boundaries for spaceship movements 
+# add : special weapons over time () 
 
  
 # use pymunk library for physics simulations ? 
@@ -74,7 +80,7 @@ bullet_list   = []    # the one that's going to contain all bullets
 BULLET_VEL    = 16    # bullet velociry 
 BULLET_WIDTH  = 4     # bullet width 
 BULLET_HEIGHT = 9     # bullet heaight 
-MAGAZINE_SIZE = 2     # magazine size (at most 3 bullets on WIN)
+MAGAZINE_SIZE = 3     # magazine size (at most 3 bullets on WIN)
 
 
 # STARs
@@ -150,6 +156,7 @@ def handle_stars_and_bullets(bullet_list, star_list):
         star     = starSettings[0]    # star itself 
         velocity = starSettings[2]    # star velocity 
         star.y += velocity
+        
 
         # star reached bottom
         if star.y > WIN_HEIGHT:             
