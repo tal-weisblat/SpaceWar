@@ -6,17 +6,18 @@ from curses import KEY_DOWN
 
 
 # SCREEN   
-SCREEN_WIDTH  = 500      
-SCREEN_HEIGHT = 650  
+WIN_WIDTH  = 500      
+WIN_HEIGHT = 650  
 pygame.display.set_caption('SpaceWar')   
-WIN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))    
+WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))    
 
 
-VEL_SPACESHIP = 5
+
 
 
 
 # ----------------------------------- SPACESHIP -------------------------------------
+VEL_SPACESHIP = 5
 class Spaceship():
     
     def __init__ (self, x, y):
@@ -30,21 +31,17 @@ class Spaceship():
         self.y = y 
         self.rect_spaceship = self.image_spaceship.get_rect()
         self.rect_spaceship.topleft = (self.x,self.y)     # adjusting according to coordinates 
-        self.turnOff = False 
 
     # DRAW 
     def draw(self):
-        if (not self.turnOff):
-            WIN.blit(self.image_spaceship, self.rect_spaceship.topleft)   
+        WIN.blit(self.image_spaceship, self.rect_spaceship.topleft)   
  
     def coordinates(self): return (self.x, self.y)              # SPACESHIP COORDINATEs for BULLET 
     def width(self): return self.image_spaceship.get_width()    # WIDTH
     def height(self): return self.image_spaceship.get_height()  # HEIGHT 
-    def turn_off(self): self.turnOff = True 
 
     # MOVEMENT  
     def movement(self):
-        
         keys = pygame.key.get_pressed()         
         if keys[pygame.K_RIGHT]:   # RIGHT
             self.x = self.x + VEL_SPACESHIP 
@@ -61,19 +58,16 @@ class Spaceship():
 
 
 
-
 # -------------------------------------- FLAME  ------------------------------------------
 class Flame():
 
     def __init__(self):
-
         scale = 0.07
         img = pygame.image.load(f'files/animations/flames/flame_1.png')
         img = pygame.transform.scale(img, (img.get_width()*scale,(img.get_height()*scale)) )   # scale 
         img = pygame.transform.rotate(img,270)                                                 # rotate 
         self.flame_width  = img.get_width()
-        self.turnOff = False         # turn off flame once game has ended
-
+        
         # for animation 
         self.index = 1       
         
@@ -105,28 +99,22 @@ class Flame():
             
     # DRAW         
     def draw(self):
-        if (not self.turnOff):
-            WIN.blit(self.image, self.rect.topleft)
+        WIN.blit(self.image, self.rect.topleft)
     
-    # TURN OFF 
-    def turn_off(self):
-        self.turnOff = True
-
 
 # -------------------------------------- BACKGROUND ------------------------------------------
-
 class Background():
 
     def __init__ (self):
         image = pygame.image.load('files/images/background.jpg')
-        self.background_image = pygame.transform.scale(image, (SCREEN_WIDTH, SCREEN_HEIGHT))      
+        self.background_image = pygame.transform.scale(image, (WIN_WIDTH, WIN_HEIGHT))      
         self.y = 0
         
     def draw(self):
         self.y = self.y + 1
         WIN.blit(self.background_image, (0, self.y))
-        WIN.blit(self.background_image, (0, self.y -  SCREEN_HEIGHT))
-        if self.y ==  SCREEN_HEIGHT: self.y = 0
+        WIN.blit(self.background_image, (0, self.y -  WIN_HEIGHT))
+        if self.y ==  WIN_HEIGHT: self.y = 0
              
               
 

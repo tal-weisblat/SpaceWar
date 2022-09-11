@@ -1,13 +1,13 @@
 # TODO 
 # add : different shapes for stars (rectangles, circles, elipses etc.)
-# increase stars falling over time 
+# increase stars falling-pace over time 
 # upgrade bullets over time 
 # change the background to something more suitable 
 # game over when star hit spaceship 
 # set boundaries for spaceship movements 
 # add : special weapons over time () 
 # sound when star reach the bottom of the screen 
-# simplify sound-functions acording to tutorial 
+
 
 # use pymunk library for physics simulations ? 
 # - you can add more features to your game
@@ -20,7 +20,7 @@
 import pygame as pygame
 import numpy  as np 
 import random
-
+import os
 
 # classes
 from classes import Background
@@ -28,23 +28,19 @@ from classes import Spaceship
 from classes import Flame
 
 
-# objects  
-background = Background()
-spaceship  = Spaceship(280,490)
-flame      = Flame()
-
-
-# MUSIC (background)
-pygame.mixer.init()
-pygame.mixer.music.load('files/sounds/melody.mp3')
-pygame.mixer.music.play()
-
 # WIN
 WIN_WIDTH  = 500                                                
 WIN_HEIGHT = 650  
 WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
 pygame.display.set_caption('SpaceWar')                    
 pygame.init()
+pygame.mixer.init()        # initiate sounds 
+
+
+# objects  
+background = Background()
+spaceship  = Spaceship(280,490)
+flame      = Flame()
 
 
 # COLORs
@@ -96,29 +92,18 @@ yes_text         = YES_AND_NO_FONT.render('Yes',1, PINK)
 no_text          = YES_AND_NO_FONT.render('No',1, PINK) 
 
 
-
-# SOUNDS 
-def bulletFired_sound():
-    pygame.mixer.init()
-    sound = pygame.mixer.Sound('files/sounds/test_sound.mp3')  
-    sound.play()
-
-def blast_sound():
-    pygame.mixer.init()
-    sound = pygame.mixer.Sound('files/sounds/blast.wav')  
-    sound.play()
-
-def gameOver_sound():
-    pygame.mixer.init()
-    sound = pygame.mixer.Sound('files/sounds/game_over.wav')  
-    sound.play()
+# SOUND
+pygame.mixer.music.load(os.path.join('files/sounds', 'melody.mp3'))  
+pygame.mixer.music.play()
+BULLET_FIRED_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'bullet_fired.mp3'))
+BLAST_SOUND        = pygame.mixer.Sound(os.path.join('files/sounds', 'blast.wav'))
+GAME_OVER_SOUND    = pygame.mixer.Sound(os.path.join('files/sounds', 'game_over.wav'))
 
 
 # DRAW BULLETS 
 def draw_bullets(bullet_list):
     for bullet in bullet_list:
         pygame.draw.rect(WIN, RED, bullet)
-
 
 # HANDLE BULLETS 
 def handle_bullets(bullet_list): 
@@ -161,7 +146,7 @@ def handle_stars_and_bullets(bullet_list, star_list):
         # COLLISION : stars & bullets 
         for bullet in bullet_list: 
             if star.colliderect(bullet): 
-                blast_sound()
+                BLAST_SOUND.play()
                 bullet_list.remove(bullet)                         # remove star  
                 star_list.remove(starSettings)                     # remove bullet       
                 pygame.event.post(pygame.event.Event(STAR_HIT))    # posing : for star-hits counting purposes 
@@ -195,24 +180,23 @@ def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, 
     
     # taking action 
     if yes_rect.collidepoint(pos) & (pygame.mouse.get_pressed()[0] == 1) & (mouse_clicked == False) :
-        main()
+        game()
     if no_rect.collidepoint(pos) & (pygame.mouse.get_pressed()[0] == 1) & (mouse_clicked == False) :
         pygame.event.post(pygame.event.Event(EXIT_GAME)) 
       
     
     
-
-
-def main():
+    
+def game():
 
     hits_number   = 0
     missed_number = 0    
-    starsSetting_list = []
-    game_over = False 
+    game_over     = False 
     mouse_clicked = False 
-    clock = pygame.time.Clock()         
-    run = True                          
-
+    run           = True          
+    clock         = pygame.time.Clock()         
+    starsSetting_list = []
+                    
     while run:
         
         clock.tick(60) 
@@ -230,7 +214,7 @@ def main():
 
                 # game over 
                 if missed_number == MAX_STAR_MISED: 
-                    gameOver_sound()
+                    GAME_OVER_SOUND.play()
                     game_over = True
 
 
@@ -245,13 +229,12 @@ def main():
                 if event.key == pygame.K_SPACE:
                     if (len(bullet_list) < MAGAZINE_SIZE):
 
-                        bulletFired_sound()
+                        BULLET_FIRED_SOUND.play()
                         x,y = spaceship.coordinates()
                         z   = spaceship.width()
                         bullet = pygame.Rect(x + z/2 - BULLET_WIDTH/2, y, BULLET_WIDTH, BULLET_HEIGHT)  
                         bullet_list.append(bullet)                         
 
-        
         # GAME-OVER 
         if game_over: 
             background.draw()
@@ -299,7 +282,7 @@ def main():
 
     
 if __name__ == '__main__':
-    main()
+    game()
 
 
     
