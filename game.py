@@ -186,8 +186,7 @@ def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, 
     if no_rect.collidepoint(pos) & (pygame.mouse.get_pressed()[0] == 1) & (mouse_clicked == False) :
         pygame.event.post(pygame.event.Event(EXIT_GAME)) 
       
-    
-    
+
     
 def game():
 
