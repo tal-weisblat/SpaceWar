@@ -13,7 +13,7 @@
 # - you can add more features to your game
 # - you can add 'dynamic stars' change their position on screen while bumping up with other static-objects 
 
-# GIT
+# GIT/GITHUB
 # delete changeBullets branch 
 
 
