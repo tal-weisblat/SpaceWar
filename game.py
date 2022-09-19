@@ -1,24 +1,4 @@
-# TODO 
-# add : different shapes for stars (rectangles, circles, elipses etc.)
-# increase stars falling-pace over time 
-# upgrade bullets over time 
-# change the background to something more suitable 
-# game over when star hit spaceship 
-# set boundaries for spaceship movements 
-# add : special weapons over time () 
-# sound when star reach the bottom of the screen 
 
-
-# use pymunk library for physics simulations ? 
-# - you can add more features to your game
-# - you can add 'dynamic stars' change their position on screen while bumping up with other static-objects 
-
-# GIT-GITHUB
-# delete changeBullets branch 
-
-
-
-# packages  
 import pygame as pygame
 import numpy  as np 
 import random
