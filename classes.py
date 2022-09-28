@@ -1,28 +1,27 @@
 
 
-import pygame as pygame
-from curses import KEY_DOWN
+# packages 
+import pygame 
+import numpy  as np 
+import random
+import os
 
-
-
-# SCREEN   
-WIN_WIDTH  = 500      
+# WINDOW 
+WIN_WIDTH  = 500                                                
 WIN_HEIGHT = 650  
-pygame.display.set_caption('SpaceWar')   
-WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))    
+WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
+pygame.display.set_caption('SpaceWar')                    
+pygame.init()
+pygame.mixer.init()        # initiate sounds 
 
 
 
 
-
-
-# ----------------------------------- SPACESHIP -------------------------------------
+# ----------------------------------------- SPACESHIP -------------------------------------------
 VEL_SPACESHIP = 5
 class Spaceship():
     
-    def __init__ (self, x, y):
-
-        # SETTINGS  
+    def __init__ (self, x, y): 
         image_spaceship = 'files/images/alien_spaceship.png'
         scale_spaceship  = 0.06
         self.image = pygame.image.load(image_spaceship).convert_alpha()
@@ -58,7 +57,7 @@ class Spaceship():
 
 
 
-# -------------------------------------- FLAME  ------------------------------------------
+# ----------------------------------------- FLAME -------------------------------------------
 class Flame():
 
     def __init__(self):
@@ -102,8 +101,11 @@ class Flame():
         WIN.blit(self.image, self.rect.topleft)
     
 
-# -------------------------------------- BACKGROUND ------------------------------------------
+
+
+# ----------------------------------------- BACKGROUND -------------------------------------------
 class Background():
+    
 
     def __init__ (self):
         image = pygame.image.load('files/images/background.jpg')

@@ -1,69 +1,21 @@
 
-import pygame as pygame
-import numpy  as np 
-import random
-import os
 
-# classes
-from classes import Background
-from classes import Spaceship
-from classes import Flame
+from gameSettings import *
 
 
-# WIN
-WIN_WIDTH  = 500                                                
-WIN_HEIGHT = 650  
-WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
-pygame.display.set_caption('SpaceWar')                    
-pygame.init()
-pygame.mixer.init()        # initiate sounds 
 
-
-# objects  
-background = Background()
-spaceship  = Spaceship(280,490)
-flame      = Flame()
-
-
-# COLORs
-RED     = (255,0,0)      # bullet
-YELLOW  = (255,255,0)    # gameover title 
-PINK    = (255,192,203)  # yes & no
-WHITE   = (255,255,255)
-COLOR_1 = (128,255,0)
-COLOR_2 = (204,102,0)
-COLOR_3 = (255,0,127)
-STAR_COLOR_LIST = [PINK,YELLOW,COLOR_1,COLOR_2,COLOR_3]
-
-
-# BULLETs
-bullet_list   = []    # the one that's going to contain all bullets
-BULLET_VEL    = 16    # bullet velociry 
-BULLET_WIDTH  = 4     # bullet width 
-BULLET_HEIGHT = 9     # bullet heaight 
-MAGAZINE_SIZE = 3     # magazine size (at most 3 bullets on WIN)
-
-
-# STARs
-star_list   = []           # contain all stars present on WIN 
-STAR_VEL    = 2            # CHNAGE : to something random 
-STAR_WIDTH  = 30           # star dimensions 
-STAR_HEIGHT = 30   
-LIST_MAX_STARS = 4         # at most 3 stars on WIN 
-MAX_STAR_MISED = 3
+# OBJECTS  
+background  = Background()
+spaceship   = Spaceship(280,490)
+flame       = Flame()    # flame beneath spaceship
+bullet_list = []         # list of all bullets 
+star_list   = []         # list of all star presented on screen 
 
 
 # EVENTS 
 EXIT_GAME   = pygame.USEREVENT + 1
 STAR_HIT    = pygame.USEREVENT + 2  
 MISSED_STAR = pygame.USEREVENT + 3 
-
-
-# FONT 
-GAME_OVER_FONT  = pygame.font.SysFont('comicsans', 40)             
-NEW_GAME_FONT   = pygame.font.SysFont('comicsans', 25)
-YES_AND_NO_FONT = pygame.font.SysFont('comicsans', 25) 
-MISSED_FONT     = pygame.font.SysFont('comicsans', 20)
 
 
 # RENDER: text, collor  
@@ -74,12 +26,6 @@ yes_text         = YES_AND_NO_FONT.render('Yes',1, PINK)
 no_text          = YES_AND_NO_FONT.render('No',1, PINK) 
 
 
-# SOUND
-pygame.mixer.music.load(os.path.join('files/sounds', 'melody.mp3'))  
-pygame.mixer.music.play()
-BULLET_FIRED_SOUND = pygame.mixer.Sound(os.path.join('files/sounds', 'bullet_fired.mp3'))
-BLAST_SOUND        = pygame.mixer.Sound(os.path.join('files/sounds', 'blast.wav'))
-GAME_OVER_SOUND    = pygame.mixer.Sound(os.path.join('files/sounds', 'game_over.wav'))
 
 
 # DRAW BULLETS 
