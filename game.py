@@ -5,9 +5,9 @@ from gameSettings import *
 
 
 # OBJECTS  
-background  = Background()
-spaceship   = Spaceship(280,490)
-flame       = Flame()    # flame beneath spaceship
+background  = Background(WIN, WIN_WIDTH, WIN_HEIGHT)
+spaceship   = Spaceship(280,490, WIN)
+flame       = Flame(WIN)    # flame beneath spaceship
 bullet_list = []         # list of all bullets 
 star_list   = []         # list of all star presented on screen 
 

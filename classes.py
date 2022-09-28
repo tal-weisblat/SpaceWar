@@ -1,18 +1,6 @@
 
 
-# packages 
 import pygame 
-import numpy  as np 
-import random
-import os
-
-# WINDOW 
-WIN_WIDTH  = 500                                                
-WIN_HEIGHT = 650  
-WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
-pygame.display.set_caption('SpaceWar')                    
-pygame.init()
-pygame.mixer.init()        # initiate sounds 
 
 
 
@@ -21,7 +9,8 @@ pygame.mixer.init()        # initiate sounds
 VEL_SPACESHIP = 5
 class Spaceship():
     
-    def __init__ (self, x, y): 
+    def __init__ (self, x, y, window): 
+        self.win = window
         image_spaceship = 'files/images/alien_spaceship.png'
         scale_spaceship  = 0.06
         self.image = pygame.image.load(image_spaceship).convert_alpha()
@@ -33,7 +22,7 @@ class Spaceship():
 
     # DRAW 
     def draw(self):
-        WIN.blit(self.image_spaceship, self.rect_spaceship.topleft)   
+        self.win.blit(self.image_spaceship, self.rect_spaceship.topleft)   
  
     def coordinates(self): return (self.x, self.y)              # SPACESHIP COORDINATEs for BULLET 
     def width(self): return self.image_spaceship.get_width()    # WIDTH
@@ -60,7 +49,8 @@ class Spaceship():
 # ----------------------------------------- FLAME -------------------------------------------
 class Flame():
 
-    def __init__(self):
+    def __init__(self, window):
+        self.win = window
         scale = 0.07
         img = pygame.image.load(f'files/animations/flames/flame_1.png')
         img = pygame.transform.scale(img, (img.get_width()*scale,(img.get_height()*scale)) )   # scale 
@@ -98,7 +88,7 @@ class Flame():
             
     # DRAW         
     def draw(self):
-        WIN.blit(self.image, self.rect.topleft)
+        self.win.blit(self.image, self.rect.topleft)
     
 
 
@@ -106,17 +96,19 @@ class Flame():
 # ----------------------------------------- BACKGROUND -------------------------------------------
 class Background():
     
-
-    def __init__ (self):
+    def __init__ (self, window, win_width, win_height):
+        self.win = window
+        self.win_width = win_width
+        self.win_height = win_height
         image = pygame.image.load('files/images/background.jpg')
-        self.background_image = pygame.transform.scale(image, (WIN_WIDTH, WIN_HEIGHT))      
+        self.background_image = pygame.transform.scale(image, (self.win_width, self.win_height))      
         self.y = 0
         
     def draw(self):
         self.y = self.y + 1
-        WIN.blit(self.background_image, (0, self.y))
-        WIN.blit(self.background_image, (0, self.y -  WIN_HEIGHT))
-        if self.y ==  WIN_HEIGHT: self.y = 0
+        self.win.blit(self.background_image, (0, self.y))
+        self.win.blit(self.background_image, (0, self.y -  self.win_height))
+        if self.y ==  self.win_height: self.y = 0
              
               
 
