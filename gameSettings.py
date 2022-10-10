@@ -7,9 +7,9 @@ import random
 import os
 
 
-from gameObjects.classes import Background
-from gameObjects.classes import Spaceship
-from gameObjects.classes import Flame
+from gameObjects.background import Background
+from gameObjects.spaceship import Spaceship
+from gameObjects.flame import Flame
 
 
 # WINDOW 
@@ -60,3 +60,17 @@ GAME_OVER_FONT  = pygame.font.SysFont('comicsans', 40)
 NEW_GAME_FONT   = pygame.font.SysFont('comicsans', 25)
 YES_AND_NO_FONT = pygame.font.SysFont('comicsans', 25) 
 MISSED_FONT     = pygame.font.SysFont('comicsans', 20)
+
+
+# TEXTS
+gameOver_text    = GAME_OVER_FONT.render('Game over',1, YELLOW)      
+playAgain_text   = NEW_GAME_FONT.render('Play again ?',1, PINK)
+or_text          = YES_AND_NO_FONT.render('or',1,PINK)
+yes_text         = YES_AND_NO_FONT.render('Yes',1, PINK)
+no_text          = YES_AND_NO_FONT.render('No',1, PINK) 
+
+
+# EVENTS 
+EXIT_GAME   = pygame.USEREVENT + 1
+STAR_HIT    = pygame.USEREVENT + 2  
+MISSED_STAR = pygame.USEREVENT + 3 

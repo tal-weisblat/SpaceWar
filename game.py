@@ -12,22 +12,6 @@ bullet_list = []
 star_list   = []        
 
 
-# EVENTS 
-EXIT_GAME   = pygame.USEREVENT + 1
-STAR_HIT    = pygame.USEREVENT + 2  
-MISSED_STAR = pygame.USEREVENT + 3 
-
-
-# RENDER: text, collor  
-gameOver_text    = GAME_OVER_FONT.render('Game over',1, YELLOW)      
-playAgain_text   = NEW_GAME_FONT.render('Play again ?',1, PINK)
-or_text          = YES_AND_NO_FONT.render('or',1,PINK)
-yes_text         = YES_AND_NO_FONT.render('Yes',1, PINK)
-no_text          = YES_AND_NO_FONT.render('No',1, PINK) 
-
-
-
-
 # DRAW BULLETS 
 def draw_bullets(bullet_list):
     for bullet in bullet_list:
