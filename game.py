@@ -7,9 +7,9 @@ from gameSettings import *
 # OBJECTS  
 background  = Background(WIN, WIN_WIDTH, WIN_HEIGHT)
 spaceship   = Spaceship(280,490, WIN)
-flame       = Flame(WIN)    # flame beneath spaceship
-bullet_list = []         # list of all bullets 
-star_list   = []         # list of all star presented on screen 
+flame       = Flame(WIN)   
+bullet_list = []        
+star_list   = []        
 
 
 # EVENTS 
@@ -52,9 +52,9 @@ def draw_stars(star_list):
 def add_new_stars(star_list):
     if len(star_list) < LIST_MAX_STARS :
         x = np.random.randint(0, WIN_WIDTH - STAR_WIDTH)      
-        star  = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)   # shape $ position    : add more shapes ?
-        color = random.choice(STAR_COLOR_LIST)               # color 
-        velocity = random.choice([1.5, 2, 2.5, 3])           # velocity : uniquely determined for each star 
+        star  = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)  
+        color = random.choice(STAR_COLOR_LIST)              
+        velocity = random.choice([1.5, 2, 2.5, 3])          
         star_list.append((star,color,velocity)) 
 
 
@@ -62,22 +62,22 @@ def add_new_stars(star_list):
 def handle_stars_and_bullets(bullet_list, star_list): 
     
     for starSettings in star_list:
-        star     = starSettings[0]    # star itself 
-        velocity = starSettings[2]    # star velocity 
+        star     = starSettings[0]    # star 
+        velocity = starSettings[2]    # star's velocity 
         star.y += velocity
         
         # star reached bottom
         if star.y > WIN_HEIGHT:             
-            pygame.event.post(pygame.event.Event(MISSED_STAR))  # posing : for counting missed-stars 
-            star_list.remove(starSettings)                      # remove star from list 
+            pygame.event.post(pygame.event.Event(MISSED_STAR))  
+            star_list.remove(starSettings)                      
 
         # COLLISION : stars & bullets 
         for bullet in bullet_list: 
             if star.colliderect(bullet): 
                 BLAST_SOUND.play()
-                bullet_list.remove(bullet)                         # remove star  
-                star_list.remove(starSettings)                     # remove bullet       
-                pygame.event.post(pygame.event.Event(STAR_HIT))    # posing : for star-hits counting purposes 
+                bullet_list.remove(bullet)                         
+                star_list.remove(starSettings)                     
+                pygame.event.post(pygame.event.Event(STAR_HIT))    
             
 
 def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, pos, mouse_clicked):
