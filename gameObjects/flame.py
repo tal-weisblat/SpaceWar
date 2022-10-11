@@ -10,10 +10,10 @@ class Flame():
     def __init__(self, window):
         self.win = window
         scale = 0.07
-        img = pygame.image.load(f'animationFiles/flame/flame_1.png')
-        img = pygame.transform.scale(img, (img.get_width()*scale,(img.get_height()*scale)) )   # scale 
-        img = pygame.transform.rotate(img,270)                                                 # rotate 
-        self.flame_width  = img.get_width()
+        img = pygame.image.load(os.path.join("animationFiles/flame", "flame_1.png"))
+        img = pygame.transform.scale(img, (img.get_width()*scale,(img.get_height()*scale)) )   
+        img = pygame.transform.rotate(img,270)                                                 
+        self.flame_width = img.get_width()
         
         self.index = 1       # for animation 
     

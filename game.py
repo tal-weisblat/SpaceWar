@@ -2,6 +2,11 @@
 
 from gameSettings import *
 
+from gameObjects.starsAndBullets import draw_stars, add_new_stars, handle_stars_and_bullets
+from gameObjects.starsAndBullets import draw_bullets, handle_bullets
+
+
+
 
 
 # OBJECTS  
@@ -12,57 +17,8 @@ bullet_list = []
 star_list   = []        
 
 
-# DRAW BULLETS 
-def draw_bullets(bullet_list):
-    for bullet in bullet_list:
-        pygame.draw.rect(WIN, RED, bullet)
 
-# HANDLE BULLETS 
-def handle_bullets(bullet_list): 
-    for bullet in bullet_list:    
-        bullet.y -= BULLET_VEL                         # movement on WIN                 
-        if bullet.y < 0: bullet_list.remove(bullet)    # reached top WIN
-
-
-# DRAW STARS          
-def draw_stars(star_list):    
-    for starSettings in star_list:
-        star  = starSettings[0]
-        color = starSettings[1]
-        pygame.draw.rect(WIN, color, star)
-
-
-# ADD NEW STARs
-def add_new_stars(star_list):
-    if len(star_list) < LIST_MAX_STARS :
-        x = np.random.randint(0, WIN_WIDTH - STAR_WIDTH)      
-        star  = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)  
-        color = random.choice(STAR_COLOR_LIST)              
-        velocity = random.choice([1.5, 2, 2.5, 3])          
-        star_list.append((star,color,velocity)) 
-
-
-# COLLISION 
-def handle_stars_and_bullets(bullet_list, star_list): 
     
-    for starSettings in star_list:
-        star     = starSettings[0]    # star 
-        velocity = starSettings[2]    # star's velocity 
-        star.y += velocity
-        
-        # star reached bottom
-        if star.y > WIN_HEIGHT:             
-            pygame.event.post(pygame.event.Event(MISSED_STAR))  
-            star_list.remove(starSettings)                      
-
-        # COLLISION : stars & bullets 
-        for bullet in bullet_list: 
-            if star.colliderect(bullet): 
-                BLAST_SOUND.play()
-                bullet_list.remove(bullet)                         
-                star_list.remove(starSettings)                     
-                pygame.event.post(pygame.event.Event(STAR_HIT))    
-            
 
 def finalWindow_draw(gameOver_text, playAgain_text, yes_text, or_text, no_text, pos, mouse_clicked):
     gameOverText_width  = gameOver_text.get_width()
@@ -156,31 +112,31 @@ def game():
             pygame.display.update()
             continue   
             
-        # BACKGROUND
+        
         background.draw()
 
-        # HITS-NUMBER  
+        # hits number 
         hits_number_text = MISSED_FONT.render('Hits: ' + str(hits_number), 1,  PINK)
         WIN.blit(hits_number_text, (0,0))    
 
-        # MISSED-NUMBER
+        # misses
         missed_number_text = MISSED_FONT.render('Misses: ' + str(missed_number), 1, PINK)
         WIN.blit(missed_number_text, (0,25))
 
-        # STARS
+        # stars
         add_new_stars(starsSetting_list)
         handle_stars_and_bullets(bullet_list, starsSetting_list)
         draw_stars(starsSetting_list)      
 
-        # BULLETS
+        # bullets
         handle_bullets(bullet_list)
         draw_bullets(bullet_list)
         
-        # SPACESHIP
+        # apaceship
         spaceship.movement()         
         spaceship.draw()             
 
-        # FLAME 
+        # flame 
         x,y = spaceship.coordinates()
         height = spaceship.height()
         width  = spaceship.width()
