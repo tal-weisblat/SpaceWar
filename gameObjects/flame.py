@@ -31,15 +31,22 @@ class Flame():
             self.img_list.append(img)
 
     # position below spaceship
-    def update_coordinates(self, x, y, spaceship_heigth, spaceship_width):
+    def __update_coordinates__(self, x, y, spaceship_heigth, spaceship_width):
         self.x = x - (self.flame_width - spaceship_width)/2 
         self.y = y + spaceship_heigth + 1
         self.rect.topleft = (self.x,self.y)
 
-    def update_img(self):  # animation 
+    def __update_image__(self):  # animation 
         self.image = self.img_list[self.index]
         self.index += 1 
         if (self.index == 10): self.index = 1 
                     
     def draw(self):
         self.win.blit(self.image, self.rect.topleft)
+
+    def updateFlame(self, flame, spaceship):
+        x,y = spaceship.coordinates()
+        height = spaceship.height()
+        width  = spaceship.width()
+        flame.__update_coordinates__(x,y, height, width)
+        flame.__update_image__()

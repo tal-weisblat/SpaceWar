@@ -69,6 +69,9 @@ or_text          = YES_AND_NO_FONT.render('or',1,PINK)
 yes_text         = YES_AND_NO_FONT.render('Yes',1, PINK)
 no_text          = YES_AND_NO_FONT.render('No',1, PINK) 
 
+# def hits_number_text(hits_number): return MISSED_FONT.render('Hits : ' + str(hits_number), 1, PINK)
+# def missed_number_text(missed_number): return MISSED_FONT.render('Missed : ' + str(missed_number), 1, PINK)
+
 
 # EVENTS 
 EXIT_GAME   = pygame.USEREVENT + 1

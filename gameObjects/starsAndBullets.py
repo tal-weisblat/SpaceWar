@@ -4,26 +4,31 @@ from gameSettings import *
 
 
 # --------------------------------------- BULLETS --------------------------------------------
-def draw_bullets(bullet_list):
+def drawBullets(bullet_list):
     for bullet in bullet_list:
         pygame.draw.rect(WIN, RED, bullet)
 
 
-def handle_bullets(bullet_list): 
+def handleBullets(bullet_list): 
     for bullet in bullet_list:    
         bullet.y -= BULLET_VEL                         
         if bullet.y < 0: bullet_list.remove(bullet)    
 
+def addBullets(spaceship, bulletList):
+    x,y = spaceship.coordinates()
+    z   = spaceship.width()
+    bullet = pygame.Rect(x + z/2 - BULLET_WIDTH/2, y, BULLET_WIDTH, BULLET_HEIGHT)  
+    bulletList.append(bullet)   
 
 
 # ---------------------------------------- STARS ---------------------------------------------
-def draw_stars(star_list):    
+def drawStars(star_list):    
     for starSettings in star_list:
         star  = starSettings[0]
         color = starSettings[1]
         pygame.draw.rect(WIN, color, star)
 
-def add_new_stars(star_list):
+def addStar(star_list):
     if len(star_list) < LIST_MAX_STARS :
         x = np.random.randint(0, WIN_WIDTH - STAR_WIDTH)      
         star  = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)  
