@@ -12,6 +12,13 @@ from gameObjects.spaceship import Spaceship
 from gameObjects.flame import Flame
 
 
+# from gameDraw.drawGameOver import drawGameOver
+# from gameDraw.drawGame import drawGame
+# from gameObjects.starsAndBullets import drawStars, addStar, handle_stars_and_bullets
+# from gameObjects.starsAndBullets import drawBullets, handleBullets, addBullets
+
+
+
 # WINDOW 
 WIN_WIDTH  = 500                                                
 WIN_HEIGHT = 650  
@@ -69,11 +76,10 @@ or_text          = YES_AND_NO_FONT.render('or',1,PINK)
 yes_text         = YES_AND_NO_FONT.render('Yes',1, PINK)
 no_text          = YES_AND_NO_FONT.render('No',1, PINK) 
 
-# def hits_number_text(hits_number): return MISSED_FONT.render('Hits : ' + str(hits_number), 1, PINK)
-# def missed_number_text(missed_number): return MISSED_FONT.render('Missed : ' + str(missed_number), 1, PINK)
 
 
 # EVENTS 
 EXIT_GAME   = pygame.USEREVENT + 1
 STAR_HIT    = pygame.USEREVENT + 2  
 MISSED_STAR = pygame.USEREVENT + 3 
+NEW_GAME    = pygame.USEREVENT + 4 
