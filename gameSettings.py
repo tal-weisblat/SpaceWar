@@ -12,13 +12,6 @@ from gameObjects.spaceship import Spaceship
 from gameObjects.flame import Flame
 
 
-# from gameDraw.drawGameOver import drawGameOver
-# from gameDraw.drawGame import drawGame
-# from gameObjects.starsAndBullets import drawStars, addStar, handle_stars_and_bullets
-# from gameObjects.starsAndBullets import drawBullets, handleBullets, addBullets
-
-
-
 # WINDOW 
 WIN_WIDTH  = 500                                                
 WIN_HEIGHT = 650  
