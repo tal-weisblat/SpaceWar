@@ -2,6 +2,8 @@
 
 from gameSettings import *
 
+from gameDB.handleTable import addGame
+
 from gameGUI.drawGameOver import drawGameOver
 from gameGUI.drawGame import drawGame
 from gameGUI.clickYesOrNo import clickYesOrNo
@@ -14,6 +16,11 @@ from gameObjects.starsAndBullets import drawBullets, handleBullets, addBullets
 
 
 def game():
+
+
+    # implement DB ; 
+    game_time = datetime.now().strftime("%d/%m/%Y, %H:%m:%S")
+    address_table = True 
 
     background  = Background(WIN, WIN_WIDTH, WIN_HEIGHT)
     spaceship   = Spaceship(280,490, WIN)
@@ -70,6 +77,13 @@ def game():
 
         # game-over 
         if game_over: 
+
+            # game_time & hits_number to DB 
+            if address_table:
+                addGame(game_time, hits_number)
+                address_table = False 
+
+
             drawGameOver(gameOver_text, 
                          playAgain_text, 
                          hits_number_text, 

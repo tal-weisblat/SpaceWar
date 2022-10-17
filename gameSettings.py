@@ -5,7 +5,8 @@ import pygame
 import numpy  as np 
 import random
 import os
-
+import time 
+from datetime import datetime
 
 from gameObjects.background import Background
 from gameObjects.spaceship import Spaceship
