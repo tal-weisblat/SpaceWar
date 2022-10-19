@@ -1,8 +1,8 @@
 
-
+ 
 from gameSettings import *
 
-from gameDB.handleTable import addGame
+from gameDB.modifyTable import addGame
 
 from gameGUI.drawGameOver import drawGameOver
 from gameGUI.drawGame import drawGame
@@ -17,17 +17,15 @@ from gameObjects.starsAndBullets import drawBullets, handleBullets, addBullets
 
 def game():
 
-
-    # implement DB ; 
-    game_time = datetime.now().strftime("%d/%m/%Y, %H:%m:%S")
+    game_time = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")   # database 
     address_table = True 
 
-    background  = Background(WIN, WIN_WIDTH, WIN_HEIGHT)
-    spaceship   = Spaceship(280,490, WIN)
+    background  = Background(WIN, GAME_WIDTH, GAME_HEIGHT)
+    spaceship   = Spaceship(GAME_WIDTH, GAME_HEIGHT, 280,490, WIN)
     flame       = Flame(WIN)   
     bulletList = []        
     starList   = []        
-    hits_number   = 0
+    score   = 0         # number of hits
     missed_number = 0    
     game_over     = False 
     new_game      = False 
@@ -41,7 +39,7 @@ def game():
         for event in pygame.event.get():    
             
             if event.type == pygame.QUIT: run = False
-            if event.type == STAR_HIT: hits_number += 1
+            if event.type == STAR_HIT: score += 1
             if event.type == EXIT_GAME: run = False 
             if event.type == NEW_GAME:
                 new_game = True
@@ -65,7 +63,7 @@ def game():
 
 
         pos = pygame.mouse.get_pos()
-        hits_number_text   = MISSED_FONT.render('Hits: ' + str(hits_number), 1,  PINK)
+        hits_number_text   = MISSED_FONT.render('Hits: ' + str(score), 1,  PINK)
         missed_number_text = MISSED_FONT.render('Misses: ' + str(missed_number), 1, PINK)
         
     
@@ -80,7 +78,7 @@ def game():
 
             # game_time & hits_number to DB 
             if address_table:
-                addGame(game_time, hits_number)
+                addGame(game_time, score)
                 address_table = False 
 
 

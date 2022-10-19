@@ -11,11 +11,17 @@ from datetime import datetime
 from gameObjects.background import Background
 from gameObjects.spaceship import Spaceship
 from gameObjects.flame import Flame
+from gameDB.getTableResults import getResults
+
+
+
 
 
 # WINDOW 
-WIN_WIDTH  = 500                                                
-WIN_HEIGHT = 650  
+WIN_WIDTH   = 850
+WIN_HEIGHT  = 650
+GAME_WIDTH  = 450                                                
+GAME_HEIGHT = 650  
 WIN = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))     
 pygame.display.set_caption('SpaceWar')                    
 pygame.init()
@@ -23,6 +29,7 @@ pygame.mixer.init()
 
 
 # COLORs
+BLACK   = (0,0,0)
 RED     = (255,0,0)      
 YELLOW  = (255,255,0)    
 PINK    = (255,192,203)  
@@ -61,7 +68,7 @@ GAME_OVER_FONT  = pygame.font.SysFont('comicsans', 40)
 NEW_GAME_FONT   = pygame.font.SysFont('comicsans', 25)
 YES_AND_NO_FONT = pygame.font.SysFont('comicsans', 25) 
 MISSED_FONT     = pygame.font.SysFont('comicsans', 20)
-
+STATISTICS = pygame.font.SysFont('comicsans', 20)
 
 # TEXTS
 gameOver_text    = GAME_OVER_FONT.render('Game over',1, YELLOW)      
@@ -77,3 +84,8 @@ EXIT_GAME   = pygame.USEREVENT + 1
 STAR_HIT    = pygame.USEREVENT + 2  
 MISSED_STAR = pygame.USEREVENT + 3 
 NEW_GAME    = pygame.USEREVENT + 4 
+
+
+# TABLE 
+TABLE_GAP = 23 
+STATISTICS = pygame.font.SysFont('comicsans', 20)

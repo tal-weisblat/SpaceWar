@@ -1,10 +1,14 @@
 
 
 from gameSettings import * 
+from gameGUI.drawStatistics import * 
+
 
 
 def drawGame(missed_number_text, hits_number_text, starList, background, drawStars, drawBullets, spaceship, flame, bulletList):
+    WIN.fill(WHITE)
     background.draw()
+    drawGameTable()
     WIN.blit(missed_number_text, (0,25))
     WIN.blit(hits_number_text, (0,0))    
     drawStars(starList)      

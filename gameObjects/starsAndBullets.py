@@ -30,7 +30,7 @@ def drawStars(star_list):
 
 def addStar(star_list):
     if len(star_list) < LIST_MAX_STARS :
-        x = np.random.randint(0, WIN_WIDTH - STAR_WIDTH)      
+        x = np.random.randint(STAR_WIDTH/4, GAME_WIDTH - STAR_WIDTH)      
         star  = pygame.Rect(x, 0, STAR_WIDTH, STAR_HEIGHT)  
         color = random.choice(STAR_COLOR_LIST)              
         velocity = random.choice([1.5, 2, 2.5, 3])          
@@ -47,7 +47,7 @@ def handle_stars_and_bullets(bullet_list, star_list):
         star.y += velocity
         
         # star reached bottom
-        if star.y > WIN_HEIGHT:             
+        if star.y > GAME_HEIGHT:             
             pygame.event.post(pygame.event.Event(MISSED_STAR))  
             star_list.remove(starSettings)                      
 
