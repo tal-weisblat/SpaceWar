@@ -1,5 +1,5 @@
 
-from gameSettings import *
+from game_settings import *
 
 
 
@@ -11,7 +11,7 @@ class Spaceship():
         self.win = window
         self.game_width = GAME_WIDTH
         self.game_height = GAME_HEIGHT
-        image_spaceship = 'imageFiles/spaceship_1.png'
+        image_spaceship = 'resource/images/spaceship_1.png'
         scale_spaceship  = 0.06
         self.image = pygame.image.load(image_spaceship).convert_alpha()
         self.image_spaceship = pygame.transform.scale(self.image,(scale_spaceship*int(self.image.get_width()),scale_spaceship*int(self.image.get_height())))  
@@ -20,10 +20,8 @@ class Spaceship():
         self.rect_spaceship = self.image_spaceship.get_rect()
         self.rect_spaceship.topleft = (self.x,self.y)    
 
-    # DRAW 
-    def draw(self):
-        self.win.blit(self.image_spaceship, self.rect_spaceship.topleft)   
- 
+     
+    def draw(self): self.win.blit(self.image_spaceship, self.rect_spaceship.topleft)   # DRAW
     def coordinates(self): return (self.x, self.y)              # SPACESHIP COORDINATEs for BULLET 
     def width(self): return self.image_spaceship.get_width()    # WIDTH
     def height(self): return self.image_spaceship.get_height()  # HEIGHT 

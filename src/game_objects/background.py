@@ -1,17 +1,17 @@
 
 
-from gameSettings import * 
+from game_settings import * 
 
 
 
 # ----------------------------------------- BACKGROUND -------------------------------------------
 class Background():
-    
+        
     def __init__ (self, window, win_width, win_height):
         self.win = window
         self.win_width = win_width
         self.win_height = win_height
-        image = pygame.image.load('imageFiles/background.jpg')
+        image = pygame.image.load('resource/images/background.jpg')
         self.background_image = pygame.transform.scale(image, (self.win_width, self.win_height))      
         self.y = 0
         

@@ -1,17 +1,12 @@
 
  
-from gameSettings import *
+from game_settings import *
 
-from gameDB.modifyTable import addGame
-
-from gameGUI.drawGameOver import drawGameOver
-from gameGUI.drawGame import drawGame
-from gameGUI.clickYesOrNo import clickYesOrNo
-
-from gameObjects.starsAndBullets import drawStars, addStar, handle_stars_and_bullets
-from gameObjects.starsAndBullets import drawBullets, handleBullets, addBullets
-
-
+from src.db.modify_table import addGame
+from src.gui.draw_game import drawGame, drawGameOver
+from src.gui.click_yes_no import clickYesOrNo
+from src.game_objects.stars_and_bullets import drawStars, addStar, handleStarsAndBullets
+from src.game_objects.stars_and_bullets import drawBullets, handleBullets, addBullets
 
 
 
@@ -19,7 +14,6 @@ def game():
 
     game_time = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")   # database 
     address_table = True 
-
     background  = Background(WIN, GAME_WIDTH, GAME_HEIGHT)
     spaceship   = Spaceship(GAME_WIDTH, GAME_HEIGHT, 280,490, WIN)
     flame       = Flame(WIN)   
@@ -61,12 +55,10 @@ def game():
                         BULLET_FIRED_SOUND.play()
                         addBullets(spaceship, bulletList)          
 
-
         pos = pygame.mouse.get_pos()
         hits_number_text   = MISSED_FONT.render('Hits: ' + str(score), 1,  PINK)
         missed_number_text = MISSED_FONT.render('Misses: ' + str(missed_number), 1, PINK)
-        
-    
+            
         # new-game 
         if new_game:
             game()
@@ -81,7 +73,6 @@ def game():
                 addGame(game_time, score)
                 address_table = False 
 
-
             drawGameOver(gameOver_text, 
                          playAgain_text, 
                          hits_number_text, 
@@ -91,9 +82,8 @@ def game():
             clickYesOrNo(yes_text, or_text, playAgain_text, mouse_clicked, pos)
             continue   
             
-        
         addStar(starList)
-        handle_stars_and_bullets(bulletList, starList)
+        handleStarsAndBullets(bulletList, starList)
         handleBullets(bulletList)
         spaceship.movement()         
         flame.updateFlame(flame, spaceship)

@@ -1,13 +1,12 @@
 
 
-from gameSettings import * 
+from game_settings import * 
 
 
 # --------------------------------------- BULLETS --------------------------------------------
 def drawBullets(bullet_list):
     for bullet in bullet_list:
         pygame.draw.rect(WIN, RED, bullet)
-
 
 def handleBullets(bullet_list): 
     for bullet in bullet_list:    
@@ -37,9 +36,8 @@ def addStar(star_list):
         star_list.append((star,color,velocity)) 
 
 
-
 # ------------------------------------- STARS & BULLETS ---------------------------------------
-def handle_stars_and_bullets(bullet_list, star_list): 
+def handleStarsAndBullets(bullet_list, star_list): 
     
     for starSettings in star_list:
         star     = starSettings[0]    
@@ -51,7 +49,7 @@ def handle_stars_and_bullets(bullet_list, star_list):
             pygame.event.post(pygame.event.Event(MISSED_STAR))  
             star_list.remove(starSettings)                      
 
-        # COLLISION : stars & bullets 
+        # collision : stars & bullets 
         for bullet in bullet_list: 
             if star.colliderect(bullet): 
                 BLAST_SOUND.play()

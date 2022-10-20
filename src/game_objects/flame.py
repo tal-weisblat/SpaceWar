@@ -1,6 +1,6 @@
 
 
-from gameSettings import *
+from game_settings import *
 
 
 
@@ -10,13 +10,11 @@ class Flame():
     def __init__(self, window):
         self.win = window
         scale = 0.07
-        img = pygame.image.load(os.path.join("animationFiles/flame", "flame_1.png"))
+        img = pygame.image.load(os.path.join("resource/animations/flame", "flame_1.png"))
         img = pygame.transform.scale(img, (img.get_width()*scale,(img.get_height()*scale)) )   
         img = pygame.transform.rotate(img,270)                                                 
         self.flame_width = img.get_width()
-        
         self.index = 1       # for animation 
-    
         self.x = 0
         self.y = 0
         self.rect = img.get_rect()
@@ -25,7 +23,7 @@ class Flame():
         # animation 
         self.img_list = []      
         for i in range(1,11):
-            img = pygame.image.load(f'animationFiles/flame/flame_{i}.png')
+            img = pygame.image.load(f'resource/animations/flame/flame_{i}.png')
             img = pygame.transform.rotate(img,270)
             img = pygame.transform.scale(img, (img.get_width()*scale,(img.get_height()*scale)) )
             self.img_list.append(img)
