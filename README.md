@@ -1,6 +1,6 @@
 # SpaceWar
 
-![Space-War image](imageFiles/game_demo.gif)
+![Space-War image](resource/images/game_demo.gif)
 
 
 # Instructions 
